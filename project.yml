@@ -1,0 +1,28 @@
+# Настройки проекта
+name: AID
+# Подключение всех пакетов SPM
+#packages:
+options:
+  bundleIdPrefix: com.AID
+# Список целей (таргетов)
+targets:
+  AID:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources: [AID]
+    # Конфигурация файла Info.plist
+    info:
+      path: AID/SupportingFiles/Info.plist
+      properties:
+        UIRequiresFullScreen: YES
+        UIApplicationSceneManifest:
+            UIApplicationSupportsMultipleScenes: false
+            UISceneConfigurations:
+              UIWindowSceneSessionRoleApplication:
+                - UISceneConfigurationName: Default Configuration
+                  UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
+        UILaunchStoryboardName: LaunchScreen
+
+
+
