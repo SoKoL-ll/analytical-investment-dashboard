@@ -1,19 +1,25 @@
 # Настройки проекта
 name: AID
 # Подключение всех пакетов SPM
-#packages:
+packages:
+  SnapKit:
+    url: https://github.com/SnapKit/SnapKit
+    from: 5.7.1
 options:
-  bundleIdPrefix: com.AID
+  bundleIdPrefix: com
 # Список целей (таргетов)
 targets:
   AID:
     type: application
     platform: iOS
-    deploymentTarget: "17.0"
+    deploymentTarget: "16.0"
+    dependencies:
+      - package: SnapKit
+        product: SnapKit
     sources: [AID]
     # Конфигурация файла Info.plist
     info:
-      path: AID/SupportingFiles/Info.plist
+      path: AID/Application/Info.plist
       properties:
         UIRequiresFullScreen: YES
         UIApplicationSceneManifest:
@@ -23,6 +29,3 @@ targets:
                 - UISceneConfigurationName: Default Configuration
                   UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
         UILaunchStoryboardName: LaunchScreen
-
-
-
