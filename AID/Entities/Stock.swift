@@ -19,8 +19,11 @@ struct Indicator {
     let value: Double
 }
 
-enum IndicatorType {
-    case first, second, third
+enum IndicatorType: String {
+    case first
+    case second
+    case third
+    case def = "return"
 }
 
 struct ChartData: Identifiable, Hashable {
@@ -30,26 +33,28 @@ struct ChartData: Identifiable, Hashable {
 }
 
 enum TimeDelta {
-    case hour, week, month, year, allTime
+    case hour, day, week, month, year, allTime
     
     var description: String {
         switch self {
-            case .hour: return "H"
-            case .week: return "W"
-            case .month: return "M"
-            case .year: return "Y"
-            case .allTime: return "A"
+        case .hour: return "H"
+        case .day: return "D"
+        case .week: return "W"
+        case .month: return "M"
+        case .year: return "Y"
+        case .allTime: return "A"
         }
     }
     
     static func from(description: String) -> TimeDelta? {
         switch description {
-            case "H": return .hour
-            case "W": return .week
-            case "M": return .month
-            case "Y": return .year
-            case "A": return .allTime
-            default: return nil
+        case "H": return .hour
+        case "D": return .day
+        case "W": return .week
+        case "M": return .month
+        case "Y": return .year
+        case "A": return .allTime
+        default: return nil
         }
     }
 }
