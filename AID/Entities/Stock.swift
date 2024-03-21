@@ -8,9 +8,7 @@
 import Foundation
 
 struct Stock {
-    let name: String
     let ticker: String
-    let price: Double
     let indicator: Indicator
 }
 

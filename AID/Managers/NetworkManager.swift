@@ -21,11 +21,23 @@ class NetworkManager: NetworkManagerDescription {
     private init() {}
     
     func getStocks(_ stockNames: [String], with indicatorType: IndicatorType, complition: @escaping (Result<[Stock], AIDError>) -> Void) {
-        let parameters: [String: String] = ["category": "return"]  // remove mock
+        var stockArray: [Stock] = []
         
+        let parameters: [String: String] = ["category": "return"]  // remove mock and set indicator type
         AF.request(baseURL, method: .post, parameters: parameters, encoder: JSONParameterEncoder.default)
             .responseDecodable(of: StockResponse.self) { response in
-                print(response)  // remove print
+                switch response.result {
+                case .success(let stocks):
+                    for stock in stocks.items {
+                        let indicator = Indicator(type: .def, value: stock.value.value)  // remove mock
+                        let stockElem = Stock(ticker: stock.key, indicator: indicator)  // remove mock and add indicator type
+                        stockArray.append(stockElem)
+                    }
+                    
+                    complition(.success(stockArray))
+                case .failure:
+                    complition(.failure(.invalidResponse))
+                }
             }
     }
     
