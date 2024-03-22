@@ -7,23 +7,36 @@
 
 import Foundation
 
-struct StockResponse: Codable {
+struct StockResponse: Decodable {
     let message: String
     let items: [String: Price]
     let postfix: String
     let updatedAt: String
 }
 
-struct StockPricesResponse: Codable {
+struct StockPricesResponse: Decodable {
     let message: String
     let items: [PriceInfo]
 }
 
-struct Price: Codable {
+struct StockIndicatorsResponse: Decodable {
+    let message: String
+    let tickerFullName: String
+    let items: [String: IndicatorInfo]
+}
+
+struct IndicatorInfo: Decodable {
+    let value: Double
+    let postfix: String
+    let description: String
+    let shouldBuy: Bool
+}
+
+struct Price: Decodable {
     let value: Double?
 }
 
-struct PriceInfo: Codable {
+struct PriceInfo: Decodable {
     let open: Double
     let close: Double
     let high: Double

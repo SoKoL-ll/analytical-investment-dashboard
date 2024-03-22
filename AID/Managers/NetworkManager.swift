@@ -9,8 +9,8 @@ import Foundation
 import Alamofire
 
 protocol NetworkManagerDescription {
-    func getStocks(with indicatorType: IndicatorType, complition: @escaping (Result<[Stock], AIDError>) -> Void)
-    func getStockIndicators(_ stockName: String, complition: @escaping (Result<[Indicator], AIDError>) -> Void)
+    func getStocks(with indicatorType: String, complition: @escaping (Result<[Stock], AIDError>) -> Void)
+    func getStockIndicators(_ stockName: String, complition: @escaping (Result<(String, [Indicator]), AIDError>) -> Void)
     func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, complition: @escaping (Result<[ChartData], AIDError>) -> Void)
 }
 
@@ -20,7 +20,7 @@ class NetworkManager: NetworkManagerDescription {
     
     private init() {}
     
-    func getStocks(with indicatorType: IndicatorType, complition: @escaping (Result<[Stock], AIDError>) -> Void) {
+    func getStocks(with indicatorType: String, complition: @escaping (Result<[Stock], AIDError>) -> Void) {
         var stockArray: [Stock] = []
         
         let parameters: [String: String] = ["category": indicatorType.description]
@@ -34,7 +34,7 @@ class NetworkManager: NetworkManagerDescription {
                 switch response.result {
                 case .success(let stocks):
                     for stock in stocks.items {
-                        let indicator = Indicator(type: indicatorType, value: stock.value.value)
+                        let indicator = Indicator(type: indicatorType, value: stock.value.value, postfix: stocks.postfix)
                         let stockElem = Stock(ticker: stock.key, indicator: indicator)
                         stockArray.append(stockElem)
                     }
@@ -46,7 +46,35 @@ class NetworkManager: NetworkManagerDescription {
             }
     }
     
-    func getStockIndicators(_ stockName: String, complition: @escaping (Result<[Indicator], AIDError>) -> Void) {}
+    func getStockIndicators(_ stockName: String, complition: @escaping (Result<(String, [Indicator]), AIDError>) -> Void) {
+        var indicatorArray: [Indicator] = []
+        
+        let indicatorsURL = "tickers/\(stockName)/values"
+        let decoder: JSONDecoder = {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            return decoder
+        }()
+        AF.request(baseURL + indicatorsURL, method: .post)
+            .responseDecodable(of: StockIndicatorsResponse.self, decoder: decoder) { response in
+//                print(response)
+                switch response.result {
+                case .success(let stockIndicators):
+                    for indicator in stockIndicators.items {
+                        let indicatorElem = Indicator(type: indicator.key,
+                                                      value: indicator.value.value,
+                                                      postfix: indicator.value.postfix, 
+                                                      desciption: indicator.value.description,
+                                                      shouldBuy: indicator.value.shouldBuy)
+                        indicatorArray.append(indicatorElem)
+                    }
+                    
+                    complition(.success((stockIndicators.tickerFullName, indicatorArray)))
+                case .failure:
+                    complition(.failure(.invalidResponse))
+                }
+            }
+    }
     
     func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, complition: @escaping (Result<[ChartData], AIDError>) -> Void) {
         var chartDataArray: [ChartData] = []

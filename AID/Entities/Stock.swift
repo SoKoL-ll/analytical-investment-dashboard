@@ -13,59 +13,18 @@ struct Stock {
 }
 
 struct Indicator {
-    let type: IndicatorType
+    let type: String
     let value: Double?
+    let postfix: String
     let desciption: String?
+    let shouldBuy: Bool?
     
-    init(type: IndicatorType, value: Double? = nil, desciption: String? = nil) {
+    init(type: String, value: Double? = nil, postfix: String, desciption: String? = nil, shouldBuy: Bool? = nil) {
         self.type = type
         self.value = value
+        self.postfix = postfix
         self.desciption = desciption
-    }
-}
-
-enum IndicatorType: String {
-    case profitability, dividends, relativeDividends, ma5, ma10, ma20, ma50, ma100, ma200, ema5, ema10, ema20, ema50, ema100, ema200
-    
-    var description: String {
-        switch self {
-        case .profitability: return "profitability"
-        case .dividends: return "dividends"
-        case .relativeDividends: return "relative_dividends"
-        case .ma5: return "ma5"
-        case .ma10: return "ma10"
-        case .ma20: return "ma20"
-        case .ma50: return "ma50"
-        case .ma100: return "ma100"
-        case .ma200: return "ma200"
-        case .ema5: return "ema5"
-        case .ema10: return "ema10"
-        case .ema20: return "ema20"
-        case .ema50: return "ema50"
-        case .ema100: return "ema100"
-        case .ema200: return "ema200"
-        }
-    }
-    
-    static func from(description: String) -> IndicatorType? {
-        switch description {
-        case "profitability": return .profitability
-        case "dividends": return .dividends
-        case "relative_dividends": return .relativeDividends
-        case "ma5": return .ma5
-        case "ma10": return .ma10
-        case "ma20": return .ma20
-        case "ma50": return .ma50
-        case "ma100": return .ma100
-        case "ma200": return .ma20
-        case "ema5": return .ema5
-        case "ema10": return .ema10
-        case "ema20": return .ema20
-        case "ema50": return .ema50
-        case "ema100": return .ema100
-        case "ema200": return .ema200
-        default: return nil
-        }
+        self.shouldBuy = shouldBuy
     }
 }
 
