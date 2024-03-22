@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension Color {
-    static let background  = Color("Background")
+    static let background = Color("Background")
     static let accent = Color("Thistle")
     static let positive = Color("Green")
     static let negative = Color("Red")
