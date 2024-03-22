@@ -10,6 +10,8 @@ import Foundation
 struct StockResponse: Codable {
     let message: String
     let items: [String: Price]
+    let postfix: String
+    let updatedAt: String
 }
 
 struct StockPricesResponse: Codable {
@@ -18,7 +20,7 @@ struct StockPricesResponse: Codable {
 }
 
 struct Price: Codable {
-    let value: Double
+    let value: Double?
 }
 
 struct PriceInfo: Codable {

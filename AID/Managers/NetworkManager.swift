@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 
 protocol NetworkManagerDescription {
-    func getStocks(_ stockNames: [String], with indicatorType: IndicatorType, complition: @escaping (Result<[Stock], AIDError>) -> Void)
+    func getStocks(with indicatorType: IndicatorType, complition: @escaping (Result<[Stock], AIDError>) -> Void)
     func getStockIndicators(_ stockName: String, complition: @escaping (Result<[Indicator], AIDError>) -> Void)
     func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, complition: @escaping (Result<[ChartData], AIDError>) -> Void)
 }
@@ -20,17 +20,22 @@ class NetworkManager: NetworkManagerDescription {
     
     private init() {}
     
-    func getStocks(_ stockNames: [String], with indicatorType: IndicatorType, complition: @escaping (Result<[Stock], AIDError>) -> Void) {
+    func getStocks(with indicatorType: IndicatorType, complition: @escaping (Result<[Stock], AIDError>) -> Void) {
         var stockArray: [Stock] = []
         
-        let parameters: [String: String] = ["category": "return"]  // remove mock and set indicator type
+        let parameters: [String: String] = ["category": indicatorType.description]
+        let decoder: JSONDecoder = {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            return decoder
+        }()
         AF.request(baseURL, method: .post, parameters: parameters, encoder: JSONParameterEncoder.default)
-            .responseDecodable(of: StockResponse.self) { response in
+            .responseDecodable(of: StockResponse.self, decoder: decoder) { response in
                 switch response.result {
                 case .success(let stocks):
                     for stock in stocks.items {
-                        let indicator = Indicator(type: .def, value: stock.value.value)  // remove mock
-                        let stockElem = Stock(ticker: stock.key, indicator: indicator)  // remove mock and add indicator type
+                        let indicator = Indicator(type: indicatorType, value: stock.value.value)
+                        let stockElem = Stock(ticker: stock.key, indicator: indicator)
                         stockArray.append(stockElem)
                     }
                     
@@ -47,13 +52,16 @@ class NetworkManager: NetworkManagerDescription {
         var chartDataArray: [ChartData] = []
         
         let pricesURL = "tickers/\(stockName)/chart"
-        let parameters: [String: String] = ["period": "1\(timeDelta.description)"]  // add number + remove mock for number of timeDelta
+        let parameters: [String: String] = ["period": "1\(timeDelta.description)"]
         AF.request(baseURL + pricesURL, method: .post, parameters: parameters, encoder: JSONParameterEncoder.default)
             .responseDecodable(of: StockPricesResponse.self) { response in
                 switch response.result {
                 case .success(let stockPrices):
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                    let dateFormatter: DateFormatter = {
+                        let dateFormatter = DateFormatter()
+                        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                        return dateFormatter
+                    }()
                     
                     for stockPrice in stockPrices.items {
                         let dateString = stockPrice.begin
