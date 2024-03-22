@@ -64,13 +64,22 @@ class NetworkManager: NetworkManagerDescription {
                     }()
                     
                     for stockPrice in stockPrices.items {
-                        let dateString = stockPrice.begin
-                        guard let stockPriceDate = dateFormatter.date(from: dateString) else {
+                        let beginDateString = stockPrice.begin
+                        let endDateString = stockPrice.end
+                        guard
+                            let stockPriceBeginDate = dateFormatter.date(from: beginDateString),
+                            let stockPriceEndDate = dateFormatter.date(from: endDateString)
+                        else {
                             complition(.failure(.invalidData))
                             return
                         }
                         
-                        let chartData = ChartData(date: stockPriceDate, value: stockPrice.value)
+                        let chartData = ChartData(open: stockPrice.open,
+                                                  close: stockPrice.close,
+                                                  high: stockPrice.high,
+                                                  low: stockPrice.low,
+                                                  begin: stockPriceBeginDate,
+                                                  end: stockPriceEndDate)
                         chartDataArray.append(chartData)
                     }
                     

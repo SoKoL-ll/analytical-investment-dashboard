@@ -24,7 +24,10 @@ struct Price: Codable {
 }
 
 struct PriceInfo: Codable {
-    let value: Double
+    let open: Double
+    let close: Double
+    let high: Double
+    let low: Double
     let begin: String
     let end: String
 }

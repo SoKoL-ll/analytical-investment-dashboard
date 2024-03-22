@@ -71,8 +71,12 @@ enum IndicatorType: String {
 
 struct ChartData: Identifiable, Hashable {
     var id = UUID()
-    var date: Date
-    var value: Double
+    let open: Double
+    let close: Double
+    let high: Double
+    let low: Double
+    let begin: Date
+    let end: Date
 }
 
 enum TimeDelta {
