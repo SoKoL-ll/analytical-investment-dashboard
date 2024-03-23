@@ -39,8 +39,8 @@ targets:
     info:
       path: AID/Application/Info.plist
       properties:
-        AppTransportSecuritySettings:
-            ExceptionDomains:
+        NSAppTransportSecuritySettings:
+            NSExceptionDomains:
                 ai-dashboard.site:
                     NSIncludesSubdomains: true
                     NSExceptionAllowsInsecureHTTPLoads: true
