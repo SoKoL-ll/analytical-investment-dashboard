@@ -71,7 +71,6 @@ class NetworkManager: NetworkManagerDescription {
                     
                     complition(.success((stockIndicators.tickerFullName, indicatorArray)))
                 case .failure:
-                    print(response)
                     complition(.failure(.invalidResponse))
                 }
             }
