@@ -8,81 +8,76 @@
 import UIKit
 import SnapKit
 
+protocol MainViewControllerDelegate: AnyObject {
+    func setContent()
+}
+
 class MainViewController: UIViewController {
 
-    private lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView(frame: view.bounds)
+    private let pageViewFactory = PageViewFactory()
+    private var currentViewIndex: Int = 0
+    private var initialPosition: CGPoint = .zero
+    private var swipeableViews: [PageViewBlank] = []
 
-        scrollView.backgroundColor = .clear
-        scrollView.contentSize = CGSize(width: view.bounds.width * 2, height: view.bounds.height * 2)
+    var delegate: MainScreenPresenter!
 
-        return scrollView
+    // Заглушка для PageView, пока у нас нет данных
+    private lazy var plugPageView: UIView = {
+        let view = UIView()
+
+        view.backgroundColor = .systemGray.withAlphaComponent(0.5)
+        view.layer.cornerRadius = 20
+
+        return view
     }()
 
-    private lazy var animator: UIDynamicAnimator = {
-        let animator = UIDynamicAnimator(referenceView: scrollView)
+    // Навигация под PageView, нажатия на нее еще не реализованы
+    private lazy var pageControl: UIPageControl = {
+        let pageControl = UIPageControl()
 
-        return animator
+        pageControl.currentPage = 0
+
+        return pageControl
     }()
-
-    private lazy var collision: UICollisionBehavior = {
-        let collision = UICollisionBehavior()
-
-        collision.collisionMode = .items
-
-        return collision
-    }()
-
-    private lazy var behavior: UIDynamicItemBehavior = {
-        let behavior = UIDynamicItemBehavior()
-
-        behavior.allowsRotation = false
-        behavior.elasticity = 0
-        behavior.density = 0
-        behavior.friction = 0
-        behavior.resistance = 2
-
-        return behavior
-    }()
-
-    private lazy var gravity: UIFieldBehavior = {
-        let gravity = UIFieldBehavior.springField()
-
-        gravity.animationSpeed = 0
-        gravity.smoothness = 1
-        gravity.strength = 3
-
-        return gravity
-    }()
-
-    private func createNavigation(with title: String?, and image: UIImage?, vc: UIViewController) -> UINavigationController {
-        let navigation = UINavigationController(rootViewController: vc)
-
-        navigation.tabBarItem.title = title
-        navigation.tabBarItem.image = image
-
-        return navigation
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupView()
-        setupScrollView()
-        setupAnimation()
+        setupPageControl()
+        setupPlugPageView()
+
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
+
+        view.addGestureRecognizer(panGestureRecognizer)
     }
 
-    private func setupScrollView() {
-        view.addSubview(scrollView)
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
 
-        scrollView.delegate = self
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
+        self.delegate.launchData()
+    }
+
+    private func setupPlugPageView() {
+        let parentController = self.parent as? UITabBarController
+
+        view.addSubview(plugPageView)
+
+        plugPageView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.top.equalToSuperview().inset(60)
+            make.bottom.equalTo(parentController?.tabBar.snp_firstBaseline ?? 0).inset(120)
+        }
+    }
+
+    private func setupPageControl() {
+        view.addSubview(pageControl)
 
         let parentController = self.parent as? UITabBarController
-        scrollView.snp.makeConstraints { make in
-            make.leading.trailing.top.equalToSuperview()
-            make.bottom.equalTo(parentController?.tabBar.snp_firstBaseline ?? 0)
+
+        pageControl.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(parentController?.tabBar.snp_firstBaseline ?? 0).inset(90)
         }
     }
 
@@ -91,71 +86,93 @@ class MainViewController: UIViewController {
         view.backgroundColor = .systemGray3
     }
 
-    private func setupAnimation() {
-        self.setupBubbles()
-        self.setupBehaviors()
-        self.setupCenter()
-    }
+    // Обработка свайпов pageViews
+    @objc private func handlePanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
+        let translation = gestureRecognizer.translation(in: view)
+        var index = (currentViewIndex + (Int(translation.x) < 0 ? 1 : -1)) % swipeableViews.count
 
-    private func setupBubbles() {
-        for index in 0...20 {
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-            let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap(_:)))
-            let x: CGFloat = (index % 2) == 0 ?
-            CGFloat.random(in: (-2000.0 ... -200)) :
-            CGFloat.random(in: (600 ... 2000))
+        index = index == -1 ? swipeableViews.count - 1 : index
 
-            let y: CGFloat = CGFloat.random(in: (-2000.0 ... 3000))
-            let origin: CGPoint = CGPoint(x: x, y: y)
-            let maxSize: CGFloat = 50 + CGFloat.random(in: (0 ... 70))
-
-            let bubbleView = BubbleView(companyName: "YNDX")
-
-            bubbleView.addGestureRecognizer(tapGesture)
-            bubbleView.addGestureRecognizer(longTapGesture)
-            bubbleView.backgroundColor = maxSize > 85 ? UIColor(named: "newGreen") : UIColor(named: "newRed")
-            bubbleView.frame = CGRect(origin: origin, size: CGSize(width: maxSize, height: maxSize))
-            bubbleView.layer.cornerRadius = bubbleView.frame.width / 2
-
-            gravity.addItem(bubbleView)
-            collision.addItem(bubbleView)
-            behavior.addItem(bubbleView)
-
-            scrollView.addSubview(bubbleView)
+        switch gestureRecognizer.state {
+        case .began:
+            initialPosition = swipeableViews[currentViewIndex].center
+        case .changed:
+            swipeableViews[currentViewIndex].center = CGPoint(x: initialPosition.x + translation.x, y: initialPosition.y)
+            if abs(translation.x) > 10 {
+                swipeableViews[index].isHidden = false
+                swipeableViews[index].center = CGPoint(
+                    x: swipeableViews[currentViewIndex].center.x
+                    + (translation.x < 0 ? 1 : -1) * (swipeableViews[currentViewIndex].frame.width + 30),
+                    y: initialPosition.y
+                )
+            } else {
+                swipeableViews[index].isHidden = true
+            }
+        case .ended, .cancelled:
+            if abs(translation.x) > swipeableViews[currentViewIndex].frame.width / 2 {
+                UIView.animate(withDuration: 0.3, animations: { [self] in
+                    swipeableViews[index].center = self.initialPosition
+                    swipeableViews[currentViewIndex].center.x = self.initialPosition.x
+                    + (translation.x > 0 ? 1 : -1) * (swipeableViews[currentViewIndex].frame.width + 30)
+                }, completion: { _ in
+                    self.swipeableViews[self.currentViewIndex].isHidden = true
+                    self.currentViewIndex = index
+                    self.pageControl.currentPage = index
+                })
+            } else {
+                UIView.animate(withDuration: 0.3, animations: { [self] in
+                    swipeableViews[currentViewIndex].center = self.initialPosition
+                    if translation.x > 0 {
+                        swipeableViews[index].center.x = self.initialPosition.x - swipeableViews[index].frame.width - 30
+                    } else {
+                        swipeableViews[index].center.x = self.initialPosition.x + swipeableViews[index].frame.width + 30
+                    }
+                }, completion: { _ in
+                    self.swipeableViews[index].isHidden = true
+                })
+            }
+        default:
+            break
         }
-    }
-
-    private func setupBehaviors() {
-        animator.addBehavior(collision)
-        animator.addBehavior(behavior)
-        animator.addBehavior(gravity)
-    }
-
-    private func setupCenter() {
-        gravity.position = CGPoint(x: scrollView.contentSize.width * 0.3, y: scrollView.contentSize.height * 0.3)
-    }
-
-    @objc func handleTap(_ sender: UITapGestureRecognizer) {
-        guard let view = sender.view as? BubbleView else {
-            return
-        }
-
-        print("Do something")
-    }
-
-    @objc func longTap(_ sender: UITapGestureRecognizer) {
-        guard let view = sender.view as? BubbleView else {
-            return
-        }
-
-        let generator = UIImpactFeedbackGenerator(style: .heavy)
-        generator.prepare()
-        generator.impactOccurred()
     }
 }
 
-extension MainViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        animator.updateItem(usingCurrentState: scrollView)
+extension MainViewController: MainViewControllerDelegate {
+    
+    // Конфигурирует наши pageViews и все, что в них находится
+    func setContent() {
+        let views = pageViewFactory.make(
+            sizeOfView: plugPageView.frame,
+            companies: ["YNDX", "VKCOM", "META", "TLGRM", "SBR", "RSNT", "TT", "TNKF", "GZPRM"],
+            countOfViews: 5
+        ) { [weak self] companyName in
+
+            guard let self = self else {
+                return
+            }
+
+            self.delegate.openInfoAboutCompany(companyName: companyName)
+        }
+
+        views.forEach { pageView in
+            self.view.addSubview(pageView)
+
+            let parentController = self.parent as? UITabBarController
+
+            pageView.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview().inset(20)
+                make.top.equalToSuperview().inset(60)
+                make.bottom.equalTo(parentController?.tabBar.snp_firstBaseline ?? 0).inset(120)
+            }
+
+            self.swipeableViews.append(pageView)
+            self.swipeableViews.first?.isHidden = false
+        }
+
+        self.pageControl.numberOfPages = swipeableViews.count
+
+        if !(self.swipeableViews.isEmpty) {
+            self.plugPageView.isHidden = true
+        }
     }
 }

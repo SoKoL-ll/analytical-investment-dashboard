@@ -12,14 +12,12 @@ targets:
   AID:
     type: application
     platform: iOS
-    deploymentTarget: "16.0"
+    deploymentTarget: "17.0"
     dependencies:
       - package: SnapKit
         product: SnapKit
     sources: [AID]
     postCompileScripts:
-      - scipt: swiftlint
-        name: SwiftLint
       - script: |
                 if [[ "$(uname -m)" == arm64 ]]; then
                     export PATH="/opt/homebrew/bin:$PATH"
@@ -30,6 +28,8 @@ targets:
                 else
                     echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
                 fi
+        name: Run SwiftLint
+        basedOnDependencyAnalysis: false
     # Конфигурация файла Info.plist
     info:
       path: AID/Application/Info.plist
