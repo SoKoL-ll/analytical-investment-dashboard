@@ -12,6 +12,7 @@ protocol NetworkManagerDescription {
     func getStocks(with indicatorType: String, complition: @escaping (Result<[Stock], AIDError>) -> Void)
     func getStockIndicators(_ stockName: String, complition: @escaping (Result<(String, [Indicator]), AIDError>) -> Void)
     func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, complition: @escaping (Result<[ChartData], AIDError>) -> Void)
+    func getCategories(complition: @escaping (Result<[String], AIDError>) -> Void)
 }
 
 class NetworkManager: NetworkManagerDescription {
@@ -57,20 +58,20 @@ class NetworkManager: NetworkManagerDescription {
         }()
         AF.request(baseURL + indicatorsURL, method: .post)
             .responseDecodable(of: StockIndicatorsResponse.self, decoder: decoder) { response in
-//                print(response)
                 switch response.result {
                 case .success(let stockIndicators):
                     for indicator in stockIndicators.items {
                         let indicatorElem = Indicator(type: indicator.key,
                                                       value: indicator.value.value,
                                                       postfix: indicator.value.postfix, 
-                                                      desciption: indicator.value.description,
+                                                      description: indicator.value.description,
                                                       shouldBuy: indicator.value.shouldBuy)
                         indicatorArray.append(indicatorElem)
                     }
                     
                     complition(.success((stockIndicators.tickerFullName, indicatorArray)))
                 case .failure:
+                    print(response)
                     complition(.failure(.invalidResponse))
                 }
             }
@@ -80,7 +81,7 @@ class NetworkManager: NetworkManagerDescription {
         var chartDataArray: [ChartData] = []
         
         let pricesURL = "tickers/\(stockName)/chart"
-        let parameters: [String: String] = ["period": "1\(timeDelta.description)"]
+        let parameters: [String: String] = ["period": timeDelta.description]
         AF.request(baseURL + pricesURL, method: .post, parameters: parameters, encoder: JSONParameterEncoder.default)
             .responseDecodable(of: StockPricesResponse.self) { response in
                 switch response.result {
@@ -112,6 +113,19 @@ class NetworkManager: NetworkManagerDescription {
                     }
                     
                     complition(.success(chartDataArray))
+                case .failure:
+                    complition(.failure(.invalidResponse))
+                }
+            }
+    }
+    
+    func getCategories(complition: @escaping (Result<[String], AIDError>) -> Void) {
+        let categoriesURL = "categories"
+        AF.request(baseURL + categoriesURL, method: .post)
+            .responseDecodable(of: CategoriesResponse.self) { response in
+                switch response.result {
+                case .success(let categories):
+                    complition(.success(categories.categories))
                 case .failure:
                     complition(.failure(.invalidResponse))
                 }

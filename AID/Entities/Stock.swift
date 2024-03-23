@@ -16,14 +16,14 @@ struct Indicator {
     let type: String
     let value: Double?
     let postfix: String
-    let desciption: String?
+    let description: String?
     let shouldBuy: Bool?
     
-    init(type: String, value: Double? = nil, postfix: String, desciption: String? = nil, shouldBuy: Bool? = nil) {
+    init(type: String, value: Double? = nil, postfix: String, description: String? = nil, shouldBuy: Bool? = nil) {
         self.type = type
         self.value = value
         self.postfix = postfix
-        self.desciption = desciption
+        self.description = description
         self.shouldBuy = shouldBuy
     }
 }

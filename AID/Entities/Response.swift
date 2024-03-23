@@ -25,8 +25,13 @@ struct StockIndicatorsResponse: Decodable {
     let items: [String: IndicatorInfo]
 }
 
+struct CategoriesResponse: Decodable {
+    let message: String
+    let categories: [String]
+}
+
 struct IndicatorInfo: Decodable {
-    let value: Double
+    let value: Double?
     let postfix: String
     let description: String
     let shouldBuy: Bool
