@@ -17,6 +17,11 @@ protocol NetworkManagerDescription {
 
 final class NetworkManager: NetworkManagerDescription {
     static let shared: NetworkManagerDescription = NetworkManager()
+    private lazy var snakeDecoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
     
     private init() {}
     
@@ -28,13 +33,8 @@ final class NetworkManager: NetworkManagerDescription {
         
         var stockArray: [Stock] = []
         let parameters: [String: String] = generateParameter(value: indicatorType.description, parameter: .category)
-        let decoder: JSONDecoder = {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return decoder
-        }()
         AF.request(endpointURL, method: .post, parameters: parameters, encoder: JSONParameterEncoder.default)
-            .responseDecodable(of: StockResponse.self, decoder: decoder) { response in
+            .responseDecodable(of: StockResponse.self, decoder: snakeDecoder) { response in
                 switch response.result {
                 case .success(let stocks):
                     for stock in stocks.items {
@@ -57,13 +57,8 @@ final class NetworkManager: NetworkManagerDescription {
         }
         
         var indicatorArray: [Indicator] = []
-        let decoder: JSONDecoder = {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return decoder
-        }()
         AF.request(endpointURL, method: .post)
-            .responseDecodable(of: StockIndicatorsResponse.self, decoder: decoder) { response in
+            .responseDecodable(of: StockIndicatorsResponse.self, decoder: snakeDecoder) { response in
                 switch response.result {
                 case .success(let stockIndicators):
                     for indicator in stockIndicators.items {
