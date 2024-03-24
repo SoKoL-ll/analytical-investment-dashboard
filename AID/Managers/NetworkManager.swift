@@ -15,22 +15,25 @@ protocol NetworkManagerDescription {
     func getCategories(complition: @escaping (Result<[String], AIDError>) -> Void)
 }
 
-class NetworkManager: NetworkManagerDescription {
+final class NetworkManager: NetworkManagerDescription {
     static let shared: NetworkManagerDescription = NetworkManager()
-    private let baseURL = "http://ai-dashboard.site/"
     
     private init() {}
     
     func getStocks(with indicatorType: String, complition: @escaping (Result<[Stock], AIDError>) -> Void) {
-        var stockArray: [Stock] = []
+        guard let endpointURL = generateBasicAPIURL() else {
+            complition(.failure(.invalidResponse))
+            return
+        }
         
-        let parameters: [String: String] = ["category": indicatorType.description]
+        var stockArray: [Stock] = []
+        let parameters: [String: String] = generateParameter(value: indicatorType.description, parameter: .category)
         let decoder: JSONDecoder = {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             return decoder
         }()
-        AF.request(baseURL, method: .post, parameters: parameters, encoder: JSONParameterEncoder.default)
+        AF.request(endpointURL, method: .post, parameters: parameters, encoder: JSONParameterEncoder.default)
             .responseDecodable(of: StockResponse.self, decoder: decoder) { response in
                 switch response.result {
                 case .success(let stocks):
@@ -48,15 +51,18 @@ class NetworkManager: NetworkManagerDescription {
     }
     
     func getStockIndicators(_ stockName: String, complition: @escaping (Result<(String, [Indicator]), AIDError>) -> Void) {
-        var indicatorArray: [Indicator] = []
+        guard let endpointURL = generateStockAPIURL(stockTicker: stockName, type: .indicators) else {
+            complition(.failure(.invalidResponse))
+            return
+        }
         
-        let indicatorsURL = "tickers/\(stockName)/values"
+        var indicatorArray: [Indicator] = []
         let decoder: JSONDecoder = {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             return decoder
         }()
-        AF.request(baseURL + indicatorsURL, method: .post)
+        AF.request(endpointURL, method: .post)
             .responseDecodable(of: StockIndicatorsResponse.self, decoder: decoder) { response in
                 switch response.result {
                 case .success(let stockIndicators):
@@ -77,17 +83,20 @@ class NetworkManager: NetworkManagerDescription {
     }
     
     func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, complition: @escaping (Result<[ChartData], AIDError>) -> Void) {
-        var chartDataArray: [ChartData] = []
+        guard let endpointURL = generateStockAPIURL(stockTicker: stockName, type: .prices) else {
+            complition(.failure(.invalidResponse))
+            return
+        }
         
-        let pricesURL = "tickers/\(stockName)/chart"
-        let parameters: [String: String] = ["period": timeDelta.description]
-        AF.request(baseURL + pricesURL, method: .post, parameters: parameters, encoder: JSONParameterEncoder.default)
+        var chartDataArray: [ChartData] = []
+        let parameters: [String: String] = generateParameter(value: timeDelta.description, parameter: .period)
+        AF.request(endpointURL, method: .post, parameters: parameters, encoder: JSONParameterEncoder.default)
             .responseDecodable(of: StockPricesResponse.self) { response in
                 switch response.result {
                 case .success(let stockPrices):
                     let dateFormatter: DateFormatter = {
                         let dateFormatter = DateFormatter()
-                        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                        dateFormatter.dateFormat = Constants.Dates.dateFormat
                         return dateFormatter
                     }()
                     
@@ -119,8 +128,12 @@ class NetworkManager: NetworkManagerDescription {
     }
     
     func getCategories(complition: @escaping (Result<[String], AIDError>) -> Void) {
-        let categoriesURL = "categories"
-        AF.request(baseURL + categoriesURL, method: .post)
+        guard let endpointURL = generateBasicAPIURL(endpoint: Constants.categoriesEndpoint) else {
+            complition(.failure(.invalidResponse))
+            return
+        }
+        
+        AF.request(endpointURL, method: .post)
             .responseDecodable(of: CategoriesResponse.self) { response in
                 switch response.result {
                 case .success(let categories):
@@ -129,5 +142,49 @@ class NetworkManager: NetworkManagerDescription {
                     complition(.failure(.invalidResponse))
                 }
             }
+    }
+}
+
+private extension NetworkManager {
+    func generateBasicAPIURL(endpoint: String? = nil) -> URL? {
+        let baseURL = Constants.scheme + Constants.host
+        var endpointURL = baseURL
+        if let endpoint = endpoint {
+            endpointURL += endpoint
+        }
+        return URL(string: endpointURL)
+    }
+    
+    func generateStockAPIURL(stockTicker: String, type: TickerInfo) -> URL? {
+        let baseURL = Constants.scheme + Constants.host
+        let tickerURL = Constants.tickerPart + stockTicker + type.rawValue
+        let endpointURL = baseURL + tickerURL
+        return URL(string: endpointURL)
+    }
+    
+    func generateParameter(value: String, parameter: Parameter) -> [String: String] {
+        return [parameter.rawValue: value]
+    }
+    
+    enum Parameter: String {
+        case period
+        case category
+    }
+    
+    enum TickerInfo: String {
+        case prices = "/chart"
+        case indicators = "/values"
+    }
+    
+    struct Constants {
+        static let scheme = "http://"
+        static let host = "ai-dashboard.site/"
+        
+        static let tickerPart = "tickers/"
+        static let categoriesEndpoint = "categories"
+        
+        struct Dates {
+            static let dateFormat = "yyyy-MM-dd HH:mm:ss"
+        }
     }
 }
