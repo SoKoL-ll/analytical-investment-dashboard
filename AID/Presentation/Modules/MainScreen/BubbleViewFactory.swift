@@ -21,14 +21,14 @@ class BubbleViewFactory {
 
         for company in companies {
             let bubbleView = BubbleView(companyName: company, bubbleDidTap: bubbleDidTap)
-            let maxSize: CGFloat = 70 + CGFloat.random(in: (0 ... 50))
-            let x = CGFloat.random(in: (sizeOfView.origin.x ... (sizeOfView.origin.x + sizeOfView.width - maxSize - 25)))
+            let maxSize: CGFloat = Constants.defaultBubbleSize + CGFloat.random(in: (0 ... 50))
+            let x = CGFloat.random(in: (sizeOfView.origin.x ... (sizeOfView.origin.x + sizeOfView.width - maxSize - Constants.largeMargin)))
             let y: CGFloat = CGFloat.random(
-                in: (sizeOfView.origin.y ... (sizeOfView.origin.y + sizeOfView.height - maxSize - 25))
+                in: (sizeOfView.origin.y ... (sizeOfView.origin.y + sizeOfView.height - maxSize - Constants.largeMargin))
             )
             let origin: CGPoint = CGPoint(x: x, y: y)
             
-            bubbleView.backgroundColor = maxSize > 95 ? UIColor(named: "newGreen") : UIColor(named: "newRed")
+            bubbleView.backgroundColor = maxSize > 95 ? .positive : .negative
             bubbleView.frame = CGRect(origin: origin, size: CGSize(width: maxSize, height: maxSize))
             bubbleView.layer.cornerRadius = bubbleView.frame.width / 2
             bubbleViews.append(bubbleView)

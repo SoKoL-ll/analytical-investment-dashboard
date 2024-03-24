@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ViewController: UITabBarController {
+class TabBarViewController: UITabBarController {
 
     // Создаем и конфигурируем кнопки для TabBar
     private func setupTabs() {
@@ -18,22 +18,22 @@ class ViewController: UITabBarController {
         mainViewController.delegate = mainViewPresenter
 
         let account = self.createNavigation(
-            with: "Общее",
-            and: UIImage(systemName: "wallet.pass.fill"),
+            with: Texts.tabBarAccount,
+            and: UIImage(systemName: "person.fill"),
             vc: AccountViewController()
         )
         let main = self.createNavigation(
-            with: "Главная",
-            and: UIImage(systemName: "person.fill"),
+            with: Texts.tabBarMain,
+            and: UIImage(systemName: "wallet.pass.fill"),
             vc: mainViewController
         )
         let favourites = self.createNavigation(
-            with: "Избранное",
+            with: Texts.tabBarFavourite,
             and: UIImage(systemName: "star.fill"),
             vc: FavouritesViewController()
         )
 
-        tabBar.backgroundColor = .black
+        tabBar.backgroundColor = .background
         
         self.setViewControllers([account, main, favourites], animated: true)
         self.selectedViewController = self.viewControllers?[1]

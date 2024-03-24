@@ -25,8 +25,9 @@ class MainViewController: UIViewController {
     private lazy var plugPageView: UIView = {
         let view = UIView()
 
+        // Заглушка для цвета, потом обговорить и добавить правильный в Assets
         view.backgroundColor = .systemGray.withAlphaComponent(0.5)
-        view.layer.cornerRadius = 20
+        view.layer.cornerRadius = Constants.cornerRadius
 
         return view
     }()
@@ -34,8 +35,6 @@ class MainViewController: UIViewController {
     // Навигация под PageView, нажатия на нее еще не реализованы
     private lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
-
-        pageControl.currentPage = 0
 
         return pageControl
     }()
@@ -58,32 +57,28 @@ class MainViewController: UIViewController {
         self.delegate.launchData()
     }
 
-    private func setupPlugPageView() {
-        let parentController = self.parent as? UITabBarController
-
-        view.addSubview(plugPageView)
-
-        plugPageView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.top.equalToSuperview().inset(60)
-            make.bottom.equalTo(parentController?.tabBar.snp_firstBaseline ?? 0).inset(120)
-        }
-    }
-
     private func setupPageControl() {
         view.addSubview(pageControl)
 
-        let parentController = self.parent as? UITabBarController
-
         pageControl.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(parentController?.tabBar.snp_firstBaseline ?? 0).inset(90)
+            make.bottom.equalToSuperview().inset(Constants.tabBarMargin)
+        }
+    }
+
+    private func setupPlugPageView() {
+        view.addSubview(plugPageView)
+
+        plugPageView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(Constants.mediumMargin)
+            make.top.equalToSuperview().inset(Constants.largeMargin)
+            make.bottom.equalTo(pageControl.snp.top)
         }
     }
 
     private func setupView() {
         view.isOpaque = true
-        view.backgroundColor = .systemGray3
+        view.backgroundColor = .background
     }
 
     // Обработка свайпов pageViews
@@ -102,7 +97,7 @@ class MainViewController: UIViewController {
                 swipeableViews[index].isHidden = false
                 swipeableViews[index].center = CGPoint(
                     x: swipeableViews[currentViewIndex].center.x
-                    + (translation.x < 0 ? 1 : -1) * (swipeableViews[currentViewIndex].frame.width + 30),
+                    + (translation.x < 0 ? 1 : -1) * (swipeableViews[currentViewIndex].frame.width + Constants.bigMargin),
                     y: initialPosition.y
                 )
             } else {
@@ -110,22 +105,22 @@ class MainViewController: UIViewController {
             }
         case .ended, .cancelled:
             if abs(translation.x) > swipeableViews[currentViewIndex].frame.width / 2 {
-                UIView.animate(withDuration: 0.3, animations: { [self] in
+                UIView.animate(withDuration: Constants.animateDuration, animations: { [self] in
                     swipeableViews[index].center = self.initialPosition
                     swipeableViews[currentViewIndex].center.x = self.initialPosition.x
-                    + (translation.x > 0 ? 1 : -1) * (swipeableViews[currentViewIndex].frame.width + 30)
+                    + (translation.x > 0 ? 1 : -1) * (swipeableViews[currentViewIndex].frame.width + Constants.bigMargin)
                 }, completion: { _ in
                     self.swipeableViews[self.currentViewIndex].isHidden = true
                     self.currentViewIndex = index
                     self.pageControl.currentPage = index
                 })
             } else {
-                UIView.animate(withDuration: 0.3, animations: { [self] in
+                UIView.animate(withDuration: Constants.animateDuration, animations: { [self] in
                     swipeableViews[currentViewIndex].center = self.initialPosition
                     if translation.x > 0 {
-                        swipeableViews[index].center.x = self.initialPosition.x - swipeableViews[index].frame.width - 30
+                        swipeableViews[index].center.x = self.initialPosition.x - swipeableViews[index].frame.width - Constants.bigMargin
                     } else {
-                        swipeableViews[index].center.x = self.initialPosition.x + swipeableViews[index].frame.width + 30
+                        swipeableViews[index].center.x = self.initialPosition.x + swipeableViews[index].frame.width + Constants.bigMargin
                     }
                 }, completion: { _ in
                     self.swipeableViews[index].isHidden = true
@@ -157,12 +152,10 @@ extension MainViewController: MainViewControllerDelegate {
         views.forEach { pageView in
             self.view.addSubview(pageView)
 
-            let parentController = self.parent as? UITabBarController
-
             pageView.snp.makeConstraints { make in
-                make.leading.trailing.equalToSuperview().inset(20)
-                make.top.equalToSuperview().inset(60)
-                make.bottom.equalTo(parentController?.tabBar.snp_firstBaseline ?? 0).inset(120)
+                make.leading.trailing.equalToSuperview().inset(Constants.mediumMargin)
+                make.top.equalToSuperview().inset(Constants.largeMargin)
+                make.bottom.equalTo(pageControl.snp.top)
             }
 
             self.swipeableViews.append(pageView)

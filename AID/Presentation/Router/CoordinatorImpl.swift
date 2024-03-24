@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+protocol Coordinator {
+    func start(in window: UIWindow)
+}
+
 class CoordinatorImpl: Coordinator {
     private weak var window: UIWindow?
     func start(in window: UIWindow) {
@@ -16,7 +20,7 @@ class CoordinatorImpl: Coordinator {
     }
 
     private func openMain() {
-        let mainViewController = ViewController()
+        let mainViewController = TabBarViewController()
         window?.rootViewController = mainViewController
         self.window?.makeKeyAndVisible()
     }

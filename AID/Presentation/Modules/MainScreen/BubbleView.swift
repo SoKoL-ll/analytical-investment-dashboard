@@ -25,7 +25,7 @@ final class BubbleView: UIView {
         let label = UILabel()
 
         label.text = "+228%"
-        label.font = UIFont.systemFont(ofSize: 11)
+        label.font = UIFont.systemFont(ofSize: Constants.fontSizeLabelStatistic)
 
         return label
     }()
@@ -59,7 +59,7 @@ final class BubbleView: UIView {
         }
 
         someStatisticLabel.snp.makeConstraints { make in
-            make.top.equalTo(labelOfName.snp_bottomMargin).offset(6)
+            make.top.equalTo(labelOfName.snp_bottomMargin).offset(Constants.smallMargin)
             make.centerX.equalToSuperview()
         }
     }

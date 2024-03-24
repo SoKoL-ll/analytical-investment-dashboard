@@ -21,7 +21,7 @@ class FavouritesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemGray3
+        view.backgroundColor = .background
         view.addSubview(todoLabel)
 
         todoLabel.snp.makeConstraints { make in
