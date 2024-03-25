@@ -22,6 +22,11 @@ final class NetworkManager: NetworkManagerDescription {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }()
+    private lazy var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = Constants.Dates.dateFormat
+        return dateFormatter
+    }()
     
     private init() {}
     
@@ -31,16 +36,15 @@ final class NetworkManager: NetworkManagerDescription {
             return
         }
         
-        var stockArray: [Stock] = []
         let parameters: [String: String] = generateParameter(value: indicatorType.description, parameter: .category)
         AF.request(endpointURL, method: .post, parameters: parameters, encoder: JSONParameterEncoder.default)
             .responseDecodable(of: StockResponse.self, decoder: snakeDecoder) { response in
                 switch response.result {
                 case .success(let stocks):
-                    for stock in stocks.items {
-                        let indicator = Indicator(type: indicatorType, value: stock.value.value, postfix: stocks.postfix)
-                        let stockElem = Stock(ticker: stock.key, indicator: indicator)
-                        stockArray.append(stockElem)
+                    var stockArray: [Stock] = []
+                    stockArray = stocks.items.map { key, value in
+                        let indicator = Indicator(type: indicatorType, value: value.value, postfix: stocks.postfix)
+                        return Stock(ticker: key, indicator: indicator)
                     }
                     
                     complition(.success(stockArray))
@@ -56,18 +60,17 @@ final class NetworkManager: NetworkManagerDescription {
             return
         }
         
-        var indicatorArray: [Indicator] = []
         AF.request(endpointURL, method: .post)
             .responseDecodable(of: StockIndicatorsResponse.self, decoder: snakeDecoder) { response in
                 switch response.result {
                 case .success(let stockIndicators):
-                    for indicator in stockIndicators.items {
-                        let indicatorElem = Indicator(type: indicator.key,
-                                                      value: indicator.value.value,
-                                                      postfix: indicator.value.postfix, 
-                                                      description: indicator.value.description,
-                                                      shouldBuy: indicator.value.shouldBuy)
-                        indicatorArray.append(indicatorElem)
+                    var indicatorArray: [Indicator] = []
+                    indicatorArray = stockIndicators.items.map { key, value in
+                        return Indicator(type: key,
+                                         value: value.value,
+                                         postfix: value.postfix,
+                                         description: value.description,
+                                         shouldBuy: value.shouldBuy)
                     }
                     
                     complition(.success((stockIndicators.tickerFullName, indicatorArray)))
@@ -83,18 +86,16 @@ final class NetworkManager: NetworkManagerDescription {
             return
         }
         
-        var chartDataArray: [ChartData] = []
         let parameters: [String: String] = generateParameter(value: timeDelta.description, parameter: .period)
         AF.request(endpointURL, method: .post, parameters: parameters, encoder: JSONParameterEncoder.default)
-            .responseDecodable(of: StockPricesResponse.self) { response in
+            .responseDecodable(of: StockPricesResponse.self) { [weak self] response in
+                guard let self = self else {
+                    return
+                }
+                
                 switch response.result {
                 case .success(let stockPrices):
-                    let dateFormatter: DateFormatter = {
-                        let dateFormatter = DateFormatter()
-                        dateFormatter.dateFormat = Constants.Dates.dateFormat
-                        return dateFormatter
-                    }()
-                    
+                    var chartDataArray: [ChartData] = []
                     for stockPrice in stockPrices.items {
                         let beginDateString = stockPrice.begin
                         let endDateString = stockPrice.end
@@ -141,6 +142,9 @@ final class NetworkManager: NetworkManagerDescription {
 }
 
 private extension NetworkManager {
+    
+    // MARK: - Generating functions
+    
     func generateBasicAPIURL(endpoint: String? = nil) -> URL? {
         let baseURL = Constants.scheme + Constants.host
         var endpointURL = baseURL
@@ -161,6 +165,8 @@ private extension NetworkManager {
         return [parameter.rawValue: value]
     }
     
+    // MARK: - Request cases
+    
     enum Parameter: String {
         case period
         case category
@@ -170,6 +176,8 @@ private extension NetworkManager {
         case prices = "/chart"
         case indicators = "/values"
     }
+    
+    // MARK: - Constants
     
     struct Constants {
         static let scheme = "http://"

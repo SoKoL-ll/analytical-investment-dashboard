@@ -51,16 +51,4 @@ enum TimeDelta {
         case .allTime: return "A"
         }
     }
-    
-    static func from(description: String) -> TimeDelta? {
-        switch description {
-        case "H": return .hour
-        case "D": return .day
-        case "W": return .week
-        case "M": return .month
-        case "Y": return .year
-        case "A": return .allTime
-        default: return nil
-        }
-    }
 }
