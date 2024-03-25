@@ -8,15 +8,15 @@
 import Foundation
 import UIKit
 
-protocol MainScreenPresenterDelegate: AnyObject {
+protocol MainScreenPresenterProtocol: AnyObject {
     func launchData()
     func openInfoAboutCompany(companyName: String)
 }
 
-class MainScreenPresenter: MainScreenPresenterDelegate {
-    weak var view: MainViewControllerDelegate?
+class MainScreenPresenter: MainScreenPresenterProtocol {
+    weak var view: MainViewControllerProtocol?
 
-    init(view: MainViewControllerDelegate) {
+    init(view: MainViewControllerProtocol) {
         self.view = view
     }
 

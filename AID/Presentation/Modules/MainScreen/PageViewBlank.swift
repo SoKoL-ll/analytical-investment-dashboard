@@ -12,17 +12,17 @@ class PageViewBlank: UIView {
 
     private var companies: [String]
     private let sizeOfVIew: CGRect
-    private let completion: (String) -> Void
+    private let bubbleDidTap: (String) -> Void
 
-    init(companies: [String], sizeOfView: CGRect, completion: @escaping (String) -> Void) {
+    init(companies: [String], sizeOfView: CGRect, bubbleDidTap: @escaping (String) -> Void) {
         self.companies = companies
         self.sizeOfVIew = sizeOfView
-        self.completion = completion
+        self.bubbleDidTap = bubbleDidTap
 
         super.init(frame: .zero)
 
         self.backgroundColor = .black
-        self.layer.cornerRadius = 20
+        self.layer.cornerRadius = Constants.cornerRadius
         self.isHidden = true
 
         setupAnimation()
@@ -84,7 +84,7 @@ class PageViewBlank: UIView {
         BubbleViewFactory.make(
             companies: companies,
             sizeOfView: self.sizeOfVIew,
-            bubbleDidTap: completion
+            bubbleDidTap: bubbleDidTap
         ) { [weak self] bubbleViews in
             guard let self = self else {
                 return

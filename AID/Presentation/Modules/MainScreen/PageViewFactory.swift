@@ -13,12 +13,12 @@ class PageViewFactory {
         sizeOfView: CGRect,
         companies: [String],
         countOfViews: Int,
-        completion: @escaping (String) -> Void
+        bubbleDidTap: @escaping (String) -> Void
     ) -> [PageViewBlank] {
         var views = [PageViewBlank]()
 
         for _ in 0..<countOfViews {
-            views.append(PageViewBlank(companies: companies, sizeOfView: sizeOfView, completion: completion))
+            views.append(PageViewBlank(companies: companies, sizeOfView: sizeOfView, bubbleDidTap: bubbleDidTap))
         }
 
         return views

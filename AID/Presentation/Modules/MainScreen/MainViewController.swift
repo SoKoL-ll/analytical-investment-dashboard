@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-protocol MainViewControllerDelegate: AnyObject {
+protocol MainViewControllerProtocol: AnyObject {
     func setContent()
 }
 
@@ -19,7 +19,7 @@ class MainViewController: UIViewController {
     private var initialPosition: CGPoint = .zero
     private var swipeableViews: [PageViewBlank] = []
 
-    var delegate: MainScreenPresenter!
+    var presenter: MainScreenPresenterProtocol?
 
     // Заглушка для PageView, пока у нас нет данных
     private lazy var plugPageView: UIView = {
@@ -54,7 +54,7 @@ class MainViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        self.delegate.launchData()
+        self.presenter?.launchData()
     }
 
     private func setupPageControl() {
@@ -132,7 +132,7 @@ class MainViewController: UIViewController {
     }
 }
 
-extension MainViewController: MainViewControllerDelegate {
+extension MainViewController: MainViewControllerProtocol {
     
     // Конфигурирует наши pageViews и все, что в них находится
     func setContent() {
@@ -146,7 +146,7 @@ extension MainViewController: MainViewControllerDelegate {
                 return
             }
 
-            self.delegate.openInfoAboutCompany(companyName: companyName)
+            self.presenter?.openInfoAboutCompany(companyName: companyName)
         }
 
         views.forEach { pageView in
