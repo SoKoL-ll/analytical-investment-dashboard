@@ -19,9 +19,3 @@ public enum Constants {
     static let defaultBubbleSize: CGFloat = 70
     static let tabBarMargin: CGFloat = 90
 }
-
-public enum Texts {
-    static let tabBarMain = "Главная"
-    static let tabBarAccount = "Общее"
-    static let tabBarFavourite = "Избранное"
-}

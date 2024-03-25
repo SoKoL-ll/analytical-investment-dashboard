@@ -53,3 +53,11 @@ class TabBarViewController: UITabBarController {
         setupTabs()
     }
 }
+
+extension TabBarViewController {
+    struct Texts {
+        static let tabBarMain = "Главная"
+        static let tabBarAccount = "Общее"
+        static let tabBarFavourite = "Избранное"
+    }
+}
