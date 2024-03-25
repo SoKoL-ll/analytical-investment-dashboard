@@ -10,7 +10,7 @@ import Alamofire
 
 protocol NetworkManagerDescription {
     func getStocks(with indicatorType: String, complition: @escaping (Result<[Stock], AIDError>) -> Void)
-    func getStockIndicators(_ stockName: String, complition: @escaping (Result<(StockInfo), AIDError>) -> Void)
+    func getStockIndicators(_ stockName: String, complition: @escaping (Result<StockInfo, AIDError>) -> Void)
     func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, complition: @escaping (Result<[ChartData], AIDError>) -> Void)
     func getCategories(complition: @escaping (Result<[String], AIDError>) -> Void)
 }
