@@ -41,8 +41,7 @@ final class NetworkManager: NetworkManagerDescription {
             .responseDecodable(of: StockResponse.self, decoder: snakeDecoder) { response in
                 switch response.result {
                 case .success(let stocks):
-                    var stockArray: [Stock] = []
-                    stockArray = stocks.items.map { key, value in
+                    let stockArray: [Stock] = stocks.items.map { key, value in
                         let indicator = Indicator(type: indicatorType, value: value.value, postfix: stocks.postfix)
                         return Stock(ticker: key, indicator: indicator)
                     }
@@ -64,8 +63,7 @@ final class NetworkManager: NetworkManagerDescription {
             .responseDecodable(of: StockIndicatorsResponse.self, decoder: snakeDecoder) { response in
                 switch response.result {
                 case .success(let stockIndicators):
-                    var indicatorArray: [Indicator] = []
-                    indicatorArray = stockIndicators.items.map { key, value in
+                    let indicatorArray: [Indicator] = stockIndicators.items.map { key, value in
                         return Indicator(type: key,
                                          value: value.value,
                                          postfix: value.postfix,
@@ -95,25 +93,21 @@ final class NetworkManager: NetworkManagerDescription {
                 
                 switch response.result {
                 case .success(let stockPrices):
-                    var chartDataArray: [ChartData] = []
-                    for stockPrice in stockPrices.items {
-                        let beginDateString = stockPrice.begin
-                        let endDateString = stockPrice.end
+                    let chartDataArray: [ChartData] = stockPrices.items.compactMap { [weak self] priceInfo in
                         guard
-                            let stockPriceBeginDate = dateFormatter.date(from: beginDateString),
-                            let stockPriceEndDate = dateFormatter.date(from: endDateString)
+                            let self = self,
+                            let stockPriceBeginDate = dateFormatter.date(from: priceInfo.begin),
+                            let stockPriceEndDate = dateFormatter.date(from: priceInfo.end)
                         else {
-                            complition(.failure(.invalidData))
-                            return
+                            return nil
                         }
                         
-                        let chartData = ChartData(open: stockPrice.open,
-                                                  close: stockPrice.close,
-                                                  high: stockPrice.high,
-                                                  low: stockPrice.low,
-                                                  begin: stockPriceBeginDate,
-                                                  end: stockPriceEndDate)
-                        chartDataArray.append(chartData)
+                        return ChartData(open: priceInfo.open,
+                                         close: priceInfo.close,
+                                         high: priceInfo.high,
+                                         low: priceInfo.low,
+                                         begin: stockPriceBeginDate,
+                                         end: stockPriceEndDate)
                     }
                     
                     complition(.success(chartDataArray))
