@@ -5,6 +5,9 @@ packages:
   SnapKit:
     url: https://github.com/SnapKit/SnapKit
     from: 5.7.1
+  Alamofire:
+    url: https://github.com/Alamofire/Alamofire.git
+    from: 5.9.0
 options:
   bundleIdPrefix: com
 # Список целей (таргетов)
@@ -16,6 +19,8 @@ targets:
     dependencies:
       - package: SnapKit
         product: SnapKit
+      - package: Alamofire
+        product: Alamofire
     sources: [AID]
     postCompileScripts:
       - script: |
@@ -34,6 +39,11 @@ targets:
     info:
       path: AID/Application/Info.plist
       properties:
+        NSAppTransportSecurity:
+            NSExceptionDomains:
+                ai-dashboard.site:
+                    NSIncludesSubdomains: true
+                    NSExceptionAllowsInsecureHTTPLoads: true
         UIRequiresFullScreen: YES
         UIApplicationSceneManifest:
             UIApplicationSupportsMultipleScenes: false
