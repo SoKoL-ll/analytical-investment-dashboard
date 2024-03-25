@@ -10,7 +10,7 @@ import Alamofire
 
 protocol NetworkManagerDescription {
     func getStocks(with indicatorType: String, complition: @escaping (Result<[Stock], AIDError>) -> Void)
-    func getStockIndicators(_ stockName: String, complition: @escaping (Result<(String, [Indicator]), AIDError>) -> Void)
+    func getStockIndicators(_ stockName: String, complition: @escaping (Result<(StockInfo), AIDError>) -> Void)
     func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, complition: @escaping (Result<[ChartData], AIDError>) -> Void)
     func getCategories(complition: @escaping (Result<[String], AIDError>) -> Void)
 }
@@ -53,7 +53,7 @@ final class NetworkManager: NetworkManagerDescription {
             }
     }
     
-    func getStockIndicators(_ stockName: String, complition: @escaping (Result<(String, [Indicator]), AIDError>) -> Void) {
+    func getStockIndicators(_ stockName: String, complition: @escaping (Result<StockInfo, AIDError>) -> Void) {
         guard let endpointURL = generateStockAPIURL(stockTicker: stockName, type: .indicators) else {
             complition(.failure(.invalidResponse))
             return
@@ -68,10 +68,14 @@ final class NetworkManager: NetworkManagerDescription {
                                          value: value.value,
                                          postfix: value.postfix,
                                          description: value.description,
-                                         shouldBuy: value.shouldBuy)
+                                         verdict: value.verdict)
                     }
+                    let stockInfo: StockInfo = .init(name: stockIndicators.shortName,
+                                                     desciption: stockIndicators.fullName,
+                                                     price: stockIndicators.price,
+                                                     indicators: indicatorArray)
                     
-                    complition(.success((stockIndicators.tickerFullName, indicatorArray)))
+                    complition(.success(stockInfo))
                 case .failure:
                     complition(.failure(.invalidResponse))
                 }
