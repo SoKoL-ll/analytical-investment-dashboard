@@ -7,10 +7,9 @@
 
 import Foundation
 
-class PageViewFactory {
+final class PageViewFactory {
     // Создаем наши pageViews
     func make(
-        sizeOfView: CGRect,
         companies: [String],
         countOfViews: Int,
         bubbleDidTap: @escaping (String) -> Void
@@ -18,7 +17,7 @@ class PageViewFactory {
         var views = [PageViewBlank]()
 
         for _ in 0..<countOfViews {
-            views.append(PageViewBlank(companies: companies, sizeOfView: sizeOfView, bubbleDidTap: bubbleDidTap))
+            views.append(PageViewBlank(companies: companies, bubbleDidTap: bubbleDidTap))
         }
 
         return views

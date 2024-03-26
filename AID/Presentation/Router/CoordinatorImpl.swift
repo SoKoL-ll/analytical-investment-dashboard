@@ -9,12 +9,13 @@ import Foundation
 import UIKit
 
 protocol Coordinator {
-    func start(in window: UIWindow)
+    func start(in window: UIWindow?)
 }
 
-class CoordinatorImpl: Coordinator {
+final class CoordinatorImpl: Coordinator {
     private weak var window: UIWindow?
-    func start(in window: UIWindow) {
+
+    func start(in window: UIWindow?) {
         self.window = window
         openMain()
     }

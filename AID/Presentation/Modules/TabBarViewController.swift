@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class TabBarViewController: UITabBarController {
+final class TabBarViewController: UITabBarController {
 
     // Создаем и конфигурируем кнопки для TabBar
     private func setupTabs() {
@@ -54,7 +54,7 @@ class TabBarViewController: UITabBarController {
     }
 }
 
-extension TabBarViewController {
+private extension TabBarViewController {
     struct Texts {
         static let tabBarMain = "Главная"
         static let tabBarAccount = "Общее"

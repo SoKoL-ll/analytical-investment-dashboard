@@ -46,6 +46,20 @@ final class BubbleView: UIView {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
         
         self.addGestureRecognizer(tapGesture)
+
+        let maxSize: CGFloat = Constants.defaultBubbleSize + CGFloat.random(in: (0 ... 50))
+        let sizeOfView = UIScreen.main.bounds
+
+        let x = CGFloat.random(in: (sizeOfView.origin.x + Margins.small ...
+                                    (sizeOfView.origin.x + sizeOfView.width - maxSize - Constants.largeMargin - Margins.small)))
+        let y: CGFloat = CGFloat.random(
+            in: (sizeOfView.origin.y + Margins.small ... (sizeOfView.origin.y + sizeOfView.height - maxSize - Constants.largeMargin - Margins.big))
+        )
+        let origin: CGPoint = CGPoint(x: x, y: y)
+
+        self.backgroundColor = maxSize > 95 ? .positive : .negative
+        self.frame = CGRect(origin: origin, size: CGSize(width: maxSize, height: maxSize))
+        self.layer.cornerRadius = self.frame.width / 2
     }
 
     private func setupLabels(companyName: String) {
@@ -95,5 +109,13 @@ extension BubbleView: UIContextMenuInteractionDelegate {
                 ])
             ])
         }
+    }
+}
+
+private extension BubbleView {
+    struct Margins {
+        static let big: CGFloat = 200
+        static let small: CGFloat = 50
+        static let medium: CGFloat = 100
     }
 }

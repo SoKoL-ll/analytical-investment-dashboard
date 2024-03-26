@@ -8,16 +8,28 @@
 import Foundation
 import UIKit
 
-class PageViewBlank: UIView {
+final class PageViewBlank: UIView {
 
     private var companies: [String]
-    private let sizeOfVIew: CGRect
     private let bubbleDidTap: (String) -> Void
+    private var isBubblesConfigurated = false
 
-    init(companies: [String], sizeOfView: CGRect, bubbleDidTap: @escaping (String) -> Void) {
+    private var bubbles: [BubbleView] {
+        didSet {
+            bubbles.forEach { bubbleView in
+                self.addSubview(bubbleView)
+
+                self.collision.addItem(bubbleView)
+                self.behavior.addItem(bubbleView)
+                self.gravity.addItem(bubbleView)
+            }
+        }
+    }
+
+    init(companies: [String], bubbleDidTap: @escaping (String) -> Void) {
         self.companies = companies
-        self.sizeOfVIew = sizeOfView
         self.bubbleDidTap = bubbleDidTap
+        self.bubbles = []
 
         super.init(frame: .zero)
 
@@ -25,9 +37,9 @@ class PageViewBlank: UIView {
         self.layer.cornerRadius = Constants.cornerRadius
         self.isHidden = true
 
-        setupAnimation()
+        setupBehaviors()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -75,30 +87,15 @@ class PageViewBlank: UIView {
 
     private func setupAnimation() {
         self.setupBubbles()
-        self.setupBehaviors()
         self.setupCenter()
     }
 
     // Создаем и конфигурируем наши круги
     func setupBubbles() {
-        BubbleViewFactory.make(
+        self.bubbles = BubbleViewFactory.make(
             companies: companies,
-            sizeOfView: self.sizeOfVIew,
             bubbleDidTap: bubbleDidTap
-        ) { [weak self] bubbleViews in
-            guard let self = self else {
-                return
-            }
-
-            bubbleViews.forEach { bubbleView in
-
-                self.collision.addItem(bubbleView)
-                self.behavior.addItem(bubbleView)
-                self.gravity.addItem(bubbleView)
-
-                self.addSubview(bubbleView)
-            }
-        }
+        )
     }
 
     // Добавляем все объекты, связанные с анимацией в основной класс
@@ -108,8 +105,14 @@ class PageViewBlank: UIView {
         animator.addBehavior(gravity)
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        if self.bubbles.isEmpty {
+            setupAnimation()
+        }
+    }
     // Задаем центр гравитации
     private func setupCenter() {
-        gravity.position = CGPoint(x: self.sizeOfVIew.width / 2, y: self.sizeOfVIew.height / 2)
+        gravity.position = CGPoint(x: (self.frame.width) / 2, y: (self.frame.height) / 2)
     }
 }

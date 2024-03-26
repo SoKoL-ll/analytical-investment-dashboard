@@ -9,10 +9,10 @@ import UIKit
 import SnapKit
 
 protocol MainViewControllerProtocol: AnyObject {
-    func setContent()
+    func setContent(companies: [String])
 }
 
-class MainViewController: UIViewController {
+final class MainViewController: UIViewController {
 
     private let pageViewFactory = PageViewFactory()
     private var currentViewIndex: Int = 0
@@ -49,11 +49,12 @@ class MainViewController: UIViewController {
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
 
         view.addGestureRecognizer(panGestureRecognizer)
+        view.isUserInteractionEnabled = false
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         self.presenter?.launchData()
     }
 
@@ -135,10 +136,11 @@ class MainViewController: UIViewController {
 extension MainViewController: MainViewControllerProtocol {
     
     // Конфигурирует наши pageViews и все, что в них находится
-    func setContent() {
+    func setContent(companies: [String]) {
+        view.isUserInteractionEnabled = true
+        
         let views = pageViewFactory.make(
-            sizeOfView: plugPageView.frame,
-            companies: ["YNDX", "VKCOM", "META", "TLGRM", "SBR", "RSNT", "TT", "TNKF", "GZPRM"],
+            companies: companies,
             countOfViews: 5
         ) { [weak self] companyName in
 
@@ -155,7 +157,7 @@ extension MainViewController: MainViewControllerProtocol {
             pageView.snp.makeConstraints { make in
                 make.leading.trailing.equalToSuperview().inset(Constants.mediumMargin)
                 make.top.equalToSuperview().inset(Constants.largeMargin)
-                make.bottom.equalTo(pageControl.snp.top)
+                make.bottom.equalTo(self.pageControl.snp.top)
             }
 
             self.swipeableViews.append(pageView)
