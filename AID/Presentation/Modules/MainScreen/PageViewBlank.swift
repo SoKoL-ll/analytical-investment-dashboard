@@ -12,7 +12,6 @@ final class PageViewBlank: UIView {
 
     private var companies: [String]
     private let bubbleDidTap: (String) -> Void
-    private var isBubblesConfigurated = false
 
     private var bubbles: [BubbleView] {
         didSet {
