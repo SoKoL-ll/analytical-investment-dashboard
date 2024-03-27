@@ -19,6 +19,12 @@ struct StockInfo {
     let indicators: [Indicator]
 }
 
+struct Index {
+    let shortName: String
+    let fullName: String
+    let tickers: [String: Double]
+}
+
 struct Indicator {
     let type: String
     let value: Double?

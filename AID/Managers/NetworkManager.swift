@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 
 protocol NetworkManagerDescription {
-    func getStocks(with indicatorType: String, completion: @escaping (Result<[Stock], AIDError>) -> Void)
+    func getStocks(with indicatorType: String, completion: @escaping (Result<([Stock], [Index]), AIDError>) -> Void)
     func getStockIndicators(_ stockName: String, completion: @escaping (Result<StockInfo, AIDError>) -> Void)
     func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, completion: @escaping (Result<[ChartData], AIDError>) -> Void)
     func getCategories(completion: @escaping (Result<[String], AIDError>) -> Void)
@@ -30,7 +30,7 @@ final class NetworkManager: NetworkManagerDescription {
     
     private init() {}
     
-    func getStocks(with indicatorType: String, completion: @escaping (Result<[Stock], AIDError>) -> Void) {
+    func getStocks(with indicatorType: String, completion: @escaping (Result<([Stock], [Index]), AIDError>) -> Void) {
         guard let endpointURL = generateBasicAPIURL() else {
             completion(.failure(.invalidResponse))
             return
@@ -41,12 +41,16 @@ final class NetworkManager: NetworkManagerDescription {
             .responseDecodable(of: StockResponse.self, decoder: snakeDecoder) { response in
                 switch response.result {
                 case .success(let stocks):
-                    let stockArray: [Stock] = stocks.items.map { key, value in
+                    let stockArray: [Stock] = stocks.tickers.map { key, value in
                         let indicator = Indicator(type: indicatorType, value: value.value, postfix: stocks.postfix)
                         return Stock(ticker: key, indicator: indicator)
                     }
+                    let indexArray: [Index] = stocks.indices.map { key, value in
+                        let index = Index(shortName: key, fullName: value.name, tickers: value.tickers)
+                        return index
+                    }
                     
-                    completion(.success(stockArray))
+                    completion(.success((stockArray, indexArray)))
                 case .failure:
                     completion(.failure(.invalidResponse))
                 }
