@@ -74,6 +74,7 @@ struct StockInfo: Widget {
         }
         .configurationDisplayName("Small Widget")
         .description("This is a small widget.")
+        .supportedFamilies([.systemSmall])
     }
 }
 
