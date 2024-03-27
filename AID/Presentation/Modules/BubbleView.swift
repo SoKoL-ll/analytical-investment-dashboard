@@ -107,7 +107,7 @@ extension BubbleView: UIContextMenuInteractionDelegate {
 
             if delegate?.didCopmanyInFavourites(companyName: self.labelOfName.text ?? "") ?? false {
                 return UIMenu(title: "", children: [
-                    UIAction(title: "Удалить из избранного", image: UIImage(systemName: "star"), handler: { [weak self] _ in
+                    UIAction(title: Texts.removeFromFavourites, image: UIImage(systemName: "star"), handler: { [weak self] _ in
                         guard let self = self else {
                             return
                         }
@@ -122,7 +122,7 @@ extension BubbleView: UIContextMenuInteractionDelegate {
                 ])
             } else {
                 return UIMenu(title: "", children: [
-                    UIAction(title: "Добавить в избранное", image: UIImage(systemName: "star.fill"), handler: { [weak self] _ in
+                    UIAction(title: Texts.addToFavourites, image: UIImage(systemName: "star.fill"), handler: { [weak self] _ in
                         guard let self = self else {
                             return
                         }
@@ -141,5 +141,10 @@ private extension BubbleView {
         static let big: CGFloat = 200
         static let small: CGFloat = 50
         static let medium: CGFloat = 100
+    }
+
+    struct Texts {
+        static let removeFromFavourites = "Удалить из избранного"
+        static let addToFavourites = "Добавить в избранное"
     }
 }

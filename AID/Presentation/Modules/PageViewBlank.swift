@@ -35,7 +35,7 @@ class PageViewBlank: UIScrollView {
         let label = UILabel()
 
         label.text = "BANK"
-        label.font = .boldSystemFont(ofSize: 24)
+        label.font = .boldSystemFont(ofSize: Constants.fontSizeLabelCompanyType)
 
         return label
     }()
@@ -54,7 +54,6 @@ class PageViewBlank: UIScrollView {
         if isScrollViewEnable {
             setupScrollView()
         } else {
-            self.layer.shadowRadius = 0.5
             self.layer.cornerRadius = Constants.cornerRadius
             setupLabel()
             self.isHidden = true
