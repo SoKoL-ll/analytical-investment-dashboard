@@ -49,7 +49,7 @@ class PageViewBlank: UIScrollView {
 
         super.init(frame: .zero)
 
-        self.backgroundColor = .pageBackground
+        self.backgroundColor = .backGroundPage
 
         if isScrollViewEnable {
             setupScrollView()

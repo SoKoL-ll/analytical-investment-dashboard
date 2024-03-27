@@ -16,9 +16,9 @@ extension UIColor {
         return color
     }()
     
-    static let pageBackground: UIColor = {
-        guard let color = UIColor(named: "PageBackground") else {
-            fatalError("Can't find color: Background")
+    static let backGroundPage: UIColor = {
+        guard let color = UIColor(named: "BackgroundPage") else {
+            fatalError("Can't find color: BackgroundPage")
         }
 
         return color

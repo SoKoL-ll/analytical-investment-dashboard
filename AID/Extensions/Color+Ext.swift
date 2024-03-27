@@ -12,5 +12,5 @@ extension Color {
     static let accent = Color("Thistle")
     static let positive = Color("Green")
     static let negative = Color("Red")
-    static let pageBackground = Color("PageBackground")
+    static let backGroundPage = Color("BackgroundPage")
 }
