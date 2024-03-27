@@ -12,6 +12,7 @@ final class BubbleView: UIView {
 
     private var editMenuInteraction: UIContextMenuInteraction?
     private let bubbleDidTap: (String) -> Void
+    weak var delegate: ViewControllerDelegateFavourites?
 
     // Label названия компании
     private lazy var labelOfName: UILabel = {
@@ -30,7 +31,8 @@ final class BubbleView: UIView {
         return label
     }()
 
-    init(companyName: String, bubbleDidTap: @escaping (String) -> Void) {
+    init(companyName: String, delegate: ViewControllerDelegateFavourites?, bubbleDidTap: @escaping (String) -> Void) {
+        self.delegate = delegate
         self.bubbleDidTap = bubbleDidTap
 
         super.init(frame: .zero)
@@ -41,10 +43,10 @@ final class BubbleView: UIView {
 
         self.addInteraction(editMenuInteraction!)
     }
-    
+
     private func setupView() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
-        
+
         self.addGestureRecognizer(tapGesture)
 
         let maxSize: CGFloat = Constants.defaultBubbleSize + CGFloat.random(in: (0 ... 50))
@@ -57,7 +59,7 @@ final class BubbleView: UIView {
         )
         let origin: CGPoint = CGPoint(x: x, y: y)
 
-        self.backgroundColor = maxSize > 95 ? .positive : .negative
+        self.backgroundColor = maxSize > 70 ? .positive : .negative
         self.frame = CGRect(origin: origin, size: CGSize(width: maxSize, height: maxSize))
         self.layer.cornerRadius = self.frame.width / 2
     }
@@ -98,16 +100,38 @@ extension BubbleView: UIContextMenuInteractionDelegate {
         _ interaction: UIContextMenuInteraction,
         configurationForMenuAtLocation location: CGPoint
     ) -> UIContextMenuConfiguration? {
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ -> UIMenu? in
-            return UIMenu(title: "", children: [
-                UIAction(title: "Item 1", image: UIImage(systemName: "mic"), handler: { _ in }),
-                UIAction(title: "Item 2", image: UIImage(systemName: "message"), handler: { _ in }),
-                UIMenu(title: "", options: .displayInline, children: [
-                    UIAction(title: "Item 3", image: UIImage(systemName: "envelope"), handler: { _ in }),
-                    UIAction(title: "Item 4", image: UIImage(systemName: "phone"), handler: { _ in }),
-                    UIAction(title: "Item 5", image: UIImage(systemName: "video"), handler: { _ in })
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ -> UIMenu? in
+            guard let self = self else {
+                return nil
+            }
+
+            if delegate?.didCopmanyInFavourites(companyName: self.labelOfName.text ?? "") ?? false {
+                return UIMenu(title: "", children: [
+                    UIAction(title: "Удалить из избранного", image: UIImage(systemName: "star"), handler: { [weak self] _ in
+                        guard let self = self else {
+                            return
+                        }
+
+                        if self.delegate?.deleteFromFavourites(companyName: self.labelOfName.text ?? "") ?? false {
+                            UIView.animate(withDuration: Constants.animateDuration) {
+                                self.isHidden = true
+                            }
+                        }
+                    }
+                            )
                 ])
-            ])
+            } else {
+                return UIMenu(title: "", children: [
+                    UIAction(title: "Добавить в избранное", image: UIImage(systemName: "star.fill"), handler: { [weak self] _ in
+                        guard let self = self else {
+                            return
+                        }
+
+                        self.delegate?.addToFavourites(companyName: self.labelOfName.text ?? "")
+                    }
+                            )
+                ])
+            }
         }
     }
 }
