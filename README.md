@@ -2,3 +2,6 @@
 1) Скачать xcodegen - ```brew install xcodegen```
 2) Создать .xcodeproj файл - ```make gen```
 3) Запустить и радоваться
+
+Для работы SwiftLint
+1) Скачать swiftlint - ```brew install swiftlint```
