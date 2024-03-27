@@ -9,10 +9,10 @@ import Foundation
 import Alamofire
 
 protocol NetworkManagerDescription {
-    func getStocks(with indicatorType: String, complition: @escaping (Result<[Stock], AIDError>) -> Void)
-    func getStockIndicators(_ stockName: String, complition: @escaping (Result<(StockInfo), AIDError>) -> Void)
-    func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, complition: @escaping (Result<[ChartData], AIDError>) -> Void)
-    func getCategories(complition: @escaping (Result<[String], AIDError>) -> Void)
+    func getStocks(with indicatorType: String, completion: @escaping (Result<[Stock], AIDError>) -> Void)
+    func getStockIndicators(_ stockName: String, completion: @escaping (Result<StockInfo, AIDError>) -> Void)
+    func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, completion: @escaping (Result<[ChartData], AIDError>) -> Void)
+    func getCategories(completion: @escaping (Result<[String], AIDError>) -> Void)
 }
 
 final class NetworkManager: NetworkManagerDescription {
@@ -30,9 +30,9 @@ final class NetworkManager: NetworkManagerDescription {
     
     private init() {}
     
-    func getStocks(with indicatorType: String, complition: @escaping (Result<[Stock], AIDError>) -> Void) {
+    func getStocks(with indicatorType: String, completion: @escaping (Result<[Stock], AIDError>) -> Void) {
         guard let endpointURL = generateBasicAPIURL() else {
-            complition(.failure(.invalidResponse))
+            completion(.failure(.invalidResponse))
             return
         }
         
@@ -46,16 +46,16 @@ final class NetworkManager: NetworkManagerDescription {
                         return Stock(ticker: key, indicator: indicator)
                     }
                     
-                    complition(.success(stockArray))
+                    completion(.success(stockArray))
                 case .failure:
-                    complition(.failure(.invalidResponse))
+                    completion(.failure(.invalidResponse))
                 }
             }
     }
     
-    func getStockIndicators(_ stockName: String, complition: @escaping (Result<StockInfo, AIDError>) -> Void) {
+    func getStockIndicators(_ stockName: String, completion: @escaping (Result<StockInfo, AIDError>) -> Void) {
         guard let endpointURL = generateStockAPIURL(stockTicker: stockName, type: .indicators) else {
-            complition(.failure(.invalidResponse))
+            completion(.failure(.invalidResponse))
             return
         }
         
@@ -71,20 +71,20 @@ final class NetworkManager: NetworkManagerDescription {
                                          verdict: value.verdict)
                     }
                     let stockInfo: StockInfo = .init(name: stockIndicators.shortName,
-                                                     desciption: stockIndicators.fullName,
+                                                     description: stockIndicators.fullName,
                                                      price: stockIndicators.price,
                                                      indicators: indicatorArray)
                     
-                    complition(.success(stockInfo))
+                    completion(.success(stockInfo))
                 case .failure:
-                    complition(.failure(.invalidResponse))
+                    completion(.failure(.invalidResponse))
                 }
             }
     }
     
-    func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, complition: @escaping (Result<[ChartData], AIDError>) -> Void) {
+    func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, completion: @escaping (Result<[ChartData], AIDError>) -> Void) {
         guard let endpointURL = generateStockAPIURL(stockTicker: stockName, type: .prices) else {
-            complition(.failure(.invalidResponse))
+            completion(.failure(.invalidResponse))
             return
         }
         
@@ -114,16 +114,16 @@ final class NetworkManager: NetworkManagerDescription {
                                          end: stockPriceEndDate)
                     }
                     
-                    complition(.success(chartDataArray))
+                    completion(.success(chartDataArray))
                 case .failure:
-                    complition(.failure(.invalidResponse))
+                    completion(.failure(.invalidResponse))
                 }
             }
     }
     
-    func getCategories(complition: @escaping (Result<[String], AIDError>) -> Void) {
+    func getCategories(completion: @escaping (Result<[String], AIDError>) -> Void) {
         guard let endpointURL = generateBasicAPIURL(endpoint: Constants.categoriesEndpoint) else {
-            complition(.failure(.invalidResponse))
+            completion(.failure(.invalidResponse))
             return
         }
         
@@ -131,9 +131,9 @@ final class NetworkManager: NetworkManagerDescription {
             .responseDecodable(of: CategoriesResponse.self) { response in
                 switch response.result {
                 case .success(let categories):
-                    complition(.success(categories.categories))
+                    completion(.success(categories.categories))
                 case .failure:
-                    complition(.failure(.invalidResponse))
+                    completion(.failure(.invalidResponse))
                 }
             }
     }
