@@ -19,7 +19,7 @@ struct Provider: TimelineProvider {
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<StockInfoEntry>) -> Void) {
-        getStock("SBER", with: "profitability") { result in
+        getStock("YNDX", with: "profitability") { result in
             switch result {
             case .success(let stockInfoWidgetModelNew):
                 completion(.init(entries: [.init(date: Date(), widgetData: stockInfoWidgetModelNew)], policy: .never))
@@ -72,8 +72,8 @@ struct StockInfo: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             StockInfoEntryView(entry: entry)
         }
-        .configurationDisplayName("Small Widget")
-        .description("This is a small widget.")
+        .configurationDisplayName("Stock info Widget")
+        .description("Some information about your favorite stock.")
         .supportedFamilies([.systemSmall])
     }
 }
@@ -114,7 +114,7 @@ func getStock(_ stockTicker: String, with indicatorName: String, complition: @es
             case .success(let logoImage):
                 image = logoImage
             case .failure:
-                complition(.failure(.invalidData))
+                image = Constants.Default.image
             }
         }
     }
@@ -186,8 +186,8 @@ func dowloadLogo(of stockTicker: String, completion: @escaping (Result<Image, AI
 }
 
 private struct Constants {
-    static let negativeColor: Color = .red
-    static let positiveColor: Color = .green
+    static let negativeColor: Color = Color("Red")
+    static let positiveColor: Color = Color("Green")
     
     struct Logo {
         static let size: CGFloat = 40.0
@@ -200,30 +200,30 @@ private struct Constants {
     struct Default {
         static let model: StockInfoWidgetModel = {
             let model = StockInfoWidgetModel(
-                ticker: "DEF",
-                fullName: "Defaul",
-                price: "$48,69",
+                ticker: "AID",
+                fullName: "AID",
+                price: "₽123.45",
                 isPositive: true,
-                indicator: "+0.98",
+                indicator: "+0.67",
                 indicatorPostfix: "%"
             )
             return model
         }()
         
         static let widgetEntry: StockInfoEntry = {
-            let image = Image("YandexImage")
+            let image = Image("DefaultImage")
             let model = StockInfoWidgetModel(
-                ticker: "DEF",
-                fullName: "Defaul",
-                price: "$48,69",
+                ticker: "AID",
+                fullName: "AID",
+                price: "₽123.45",
                 isPositive: true,
-                indicator: "+0.98",
+                indicator: "+0.67",
                 indicatorPostfix: "%"
             )
             return StockInfoEntry(date: Date(), widgetData: .init(model: model, image: image))
         }()
         
-        static let image = Image("YandexImage")
+        static let image = Image("DefaultImage")
         
         static let pricePrefix = "₽"
     }
