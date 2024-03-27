@@ -71,10 +71,11 @@ struct StockInfo: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             StockInfoEntryView(entry: entry)
+                .containerBackground(.background, for: .widget)
         }
         .configurationDisplayName("Stock info Widget")
         .description("Some information about your favorite stock.")
-        .supportedFamilies([.systemSmall])
+//        .supportedFamilies([.systemSmall])
     }
 }
 
