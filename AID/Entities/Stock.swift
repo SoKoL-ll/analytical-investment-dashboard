@@ -12,19 +12,32 @@ struct Stock {
     let indicator: Indicator
 }
 
+struct StockInfo {
+    let name: String
+    let description: String
+    let price: Double?
+    let indicators: [Indicator]
+}
+
+struct Index {
+    let shortName: String
+    let fullName: String
+    let tickers: [String: Double]
+}
+
 struct Indicator {
     let type: String
     let value: Double?
     let postfix: String
     let description: String?
-    let shouldBuy: Bool?
+    let verdict: Double?
     
-    init(type: String, value: Double? = nil, postfix: String, description: String? = nil, shouldBuy: Bool? = nil) {
+    init(type: String, value: Double? = nil, postfix: String, description: String? = nil, verdict: Double? = nil) {
         self.type = type
         self.value = value
         self.postfix = postfix
         self.description = description
-        self.shouldBuy = shouldBuy
+        self.verdict = verdict
     }
 }
 
