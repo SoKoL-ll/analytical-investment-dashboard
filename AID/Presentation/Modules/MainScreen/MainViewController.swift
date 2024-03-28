@@ -15,6 +15,7 @@ protocol MainViewControllerProtocol: AnyObject {
 final class MainViewController: UIViewController {
 
     private let pageViewFactory = PageViewFactory()
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
     private var currentViewIndex: Int = 0
     private var initialPosition: CGPoint = .zero
     private var swipeableViews: [PageViewBlank] = []
@@ -50,14 +51,19 @@ final class MainViewController: UIViewController {
 
         view.addGestureRecognizer(panGestureRecognizer)
         view.isUserInteractionEnabled = false
+        activityIndicator.center = view.center
+        view.addSubview(activityIndicator)
+        activityIndicator.startAnimating()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.presenter?.launchData()
+        if swipeableViews.isEmpty {
+            self.presenter?.launchData()
+        }
     }
-
+    
     private func setupPageControl() {
         view.addSubview(pageControl)
 
@@ -138,10 +144,11 @@ extension MainViewController: MainViewControllerProtocol {
     // Конфигурирует наши pageViews и все, что в них находится
     func setContent(companies: [String]) {
         view.isUserInteractionEnabled = true
-        
+        activityIndicator.removeFromSuperview()
         let views = pageViewFactory.make(
             companies: companies,
-            countOfViews: 5
+            countOfViews: 5,
+            delegate: self
         ) { [weak self] companyName in
 
             guard let self = self else {
@@ -169,5 +176,21 @@ extension MainViewController: MainViewControllerProtocol {
         if !(self.swipeableViews.isEmpty) {
             self.plugPageView.isHidden = true
         }
+    }
+}
+
+extension MainViewController: ViewControllerDelegateFavourites {
+    func deleteFromFavourites(companyName: String) -> Bool {
+        presenter?.deleteFromFavourites(companyName: companyName)
+
+        return false
+    }
+    
+    func addToFavourites(companyName: String) {
+        presenter?.addToFavourites(companyName: companyName)
+    }
+    
+    func didCopmanyInFavourites(companyName: String) -> Bool {
+        presenter?.companyInFavourites(companyName: companyName) ?? false
     }
 }

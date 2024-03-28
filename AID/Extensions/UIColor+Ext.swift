@@ -16,6 +16,14 @@ extension UIColor {
         return color
     }()
     
+    static let backGroundPage: UIColor = {
+        guard let color = UIColor(named: "BackgroundPage") else {
+            fatalError("Can't find color: BackgroundPage")
+        }
+
+        return color
+    }()
+
     static let accent: UIColor = {
         guard let color = UIColor(named: "Thistle") else {
             fatalError("Can't find color: Thistle")

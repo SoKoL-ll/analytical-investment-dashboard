@@ -8,13 +8,18 @@
 import Foundation
 import UIKit
 
-final class PageViewBlank: UIView {
+class PageViewBlank: UIScrollView {
 
     private var companies: [String]
     private let bubbleDidTap: (String) -> Void
-
+    private var isScrollViewEnable: Bool
+    weak var viewDelegate: ViewControllerDelegateFavourites?
     private var bubbles: [BubbleView] {
         didSet {
+            self.bubbles.forEach {
+                $0.removeFromSuperview()
+            }
+
             bubbles.forEach { bubbleView in
                 self.addSubview(bubbleView)
 
@@ -25,16 +30,34 @@ final class PageViewBlank: UIView {
         }
     }
 
-    init(companies: [String], bubbleDidTap: @escaping (String) -> Void) {
+    // Просто для примера, потом текст будет верный
+    private lazy var companiesTypeLabel: UILabel = {
+        let label = UILabel()
+
+        label.text = "BANK"
+        label.font = .boldSystemFont(ofSize: Constants.fontSizeLabelCompanyType)
+
+        return label
+    }()
+
+    init(companies: [String], isScrollViewEnable: Bool, delegate: ViewControllerDelegateFavourites, bubbleDidTap: @escaping (String) -> Void) {
+        self.viewDelegate = delegate
         self.companies = companies
         self.bubbleDidTap = bubbleDidTap
         self.bubbles = []
+        self.isScrollViewEnable = isScrollViewEnable
 
         super.init(frame: .zero)
 
-        self.backgroundColor = .black
-        self.layer.cornerRadius = Constants.cornerRadius
-        self.isHidden = true
+        self.backgroundColor = .backGroundPage
+
+        if isScrollViewEnable {
+            setupScrollView()
+        } else {
+            self.layer.cornerRadius = Constants.cornerRadius
+            setupLabel()
+            self.isHidden = true
+        }
 
         setupBehaviors()
     }
@@ -54,7 +77,7 @@ final class PageViewBlank: UIView {
     private lazy var collision: UICollisionBehavior = {
         let collision = UICollisionBehavior()
 
-        collision.collisionMode = .everything
+        collision.collisionMode = isScrollViewEnable ? .items : .everything
         collision.translatesReferenceBoundsIntoBoundary = true
 
         return collision
@@ -79,7 +102,7 @@ final class PageViewBlank: UIView {
 
         gravity.animationSpeed = 0
         gravity.smoothness = 1
-        gravity.strength = 3
+        gravity.strength = 10
 
         return gravity
     }()
@@ -93,10 +116,19 @@ final class PageViewBlank: UIView {
     func setupBubbles() {
         self.bubbles = BubbleViewFactory.make(
             companies: companies,
+            delegate: viewDelegate,
             bubbleDidTap: bubbleDidTap
         )
     }
 
+    func setupLabel() {
+        self.addSubview(companiesTypeLabel)
+
+        companiesTypeLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview().inset(Constants.mediumMargin)
+        }
+    }
     // Добавляем все объекты, связанные с анимацией в основной класс
     private func setupBehaviors() {
         animator.addBehavior(collision)
@@ -112,6 +144,22 @@ final class PageViewBlank: UIView {
     }
     // Задаем центр гравитации
     private func setupCenter() {
-        gravity.position = CGPoint(x: (self.frame.width) / 2, y: (self.frame.height) / 2)
+        gravity.position = isScrollViewEnable ?
+        CGPoint(x: contentSize.width / 2, y: contentSize.height / 2) :
+        CGPoint(x: (self.frame.width) / 2, y: (self.frame.height) / 1.5)
+    }
+
+    private func setupScrollView() {
+        self.backgroundColor = .clear
+        self.showsVerticalScrollIndicator = false
+        self.showsHorizontalScrollIndicator = false
+        self.contentSize = CGSize(
+            width: UIScreen.main.bounds.width * 2,
+            height: UIScreen.main.bounds.height * 2
+        )
+
+        let offset = CGPoint(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2)
+
+        self.setContentOffset(offset, animated: true)
     }
 }
