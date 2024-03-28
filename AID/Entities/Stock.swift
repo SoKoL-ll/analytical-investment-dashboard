@@ -29,13 +29,15 @@ struct Indicator {
     let type: String
     let value: Double?
     let postfix: String
+    let name: String?
     let description: String?
     let verdict: Double?
     
-    init(type: String, value: Double? = nil, postfix: String, description: String? = nil, verdict: Double? = nil) {
+    init(type: String, value: Double? = nil, postfix: String, name: String? = nil, description: String? = nil, verdict: Double? = nil) {
         self.type = type
         self.value = value
         self.postfix = postfix
+        self.name = name
         self.description = description
         self.verdict = verdict
     }
