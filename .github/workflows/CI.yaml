@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - tests
+
+jobs:
+  build:
+    runs-on: macOS-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Generate Xcode project
+      run: |
+        make gen
+
+    - name: Set up Xcode
+      uses: actions/setup-xcode@v2
+      with:
+        xcode-version: '15.3'
+
+    - name: Run unit tests
+      run: |
+        xcodebuild -project AID.xcodeproj -scheme AIDUnitTests -destination 'platform=iOS Simulator,name=iPhone 13' test | xcpretty
+
+    - name: Run UI tests
+      run: |
+        xcodebuild -project AID.xcodeproj -scheme AIDUITests -destination 'platform=iOS Simulator,name=iPhone 13' test | xcpretty
+
