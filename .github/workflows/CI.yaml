@@ -12,6 +12,9 @@ jobs:
     - name: check Xcode version
       run: /usr/bin/xcodebuild -version
 
+    - name: Select Xcode 15.2
+      run: sudo xcode-select --switch /Applications/Xcode_15.2.app
+
     - name: checkout repository
       uses: actions/checkout@v3
 
