@@ -29,7 +29,7 @@ struct StockIndicatorsResponse: Decodable {
     let message: String
     let shortName: String
     let fullName: String
-    let price: Double
+    let price: Double?
     let items: [String: IndicatorInfo]
 }
 

@@ -15,7 +15,7 @@ struct Stock {
 struct StockInfo {
     let name: String
     let description: String
-    let price: Double
+    let price: Double?
     let indicators: [Indicator]
 }
 
