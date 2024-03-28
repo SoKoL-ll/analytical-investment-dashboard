@@ -12,15 +12,15 @@ jobs:
     - name: check Xcode version
       run: /usr/bin/xcodebuild -version
 
-    - name: Select Xcode 15.2
-      run: sudo xcode-select --switch /Applications/Xcode_15.2.app
+    - name: Select Xcode 15.0
+      run: sudo xcode-select --switch /Applications/Xcode_15.0.app
 
     - name: checkout repository
       uses: actions/checkout@v3
 
     - uses: actions/checkout@v3
       with:
-        xcode-version: '15.2.0'
+        xcode-version: '15.0'
 
     - name: Install dependencies
       run: |
