@@ -19,6 +19,11 @@ final class TabBarViewController: UITabBarController {
         
         let navigationController = UINavigationController(rootViewController: mainViewController)
 
+        let favouritesViewController = FavouritesViewController()
+        let favouritesViewPresenter = FavouritesScreenPresenter(view: favouritesViewController)
+
+        favouritesViewController.presenter = favouritesViewPresenter
+
         let account = self.createNavigation(
             with: Texts.tabBarAccount,
             and: UIImage(systemName: "person.fill"),
@@ -32,11 +37,13 @@ final class TabBarViewController: UITabBarController {
         let favourites = self.createNavigation(
             with: Texts.tabBarFavourite,
             and: UIImage(systemName: "star.fill"),
-            vc: FavouritesViewController()
+            vc: favouritesViewController
         )
 
         tabBar.backgroundColor = .background
-        
+        tabBar.isTranslucent = false
+        tabBar.barTintColor = .background
+
         self.setViewControllers([account, main, favourites], animated: true)
         self.selectedViewController = self.viewControllers?[1]
     }
