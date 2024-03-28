@@ -32,6 +32,15 @@ struct DetailsChartView: View {
         return startDates...endDates
     }
     
+    static private var availablePeriods: [(name: String, period: TimeDelta)] = [
+        ("Ч", .hour),
+        ("Д", .day),
+        ("Н", .week),
+        ("М", .month),
+        ("Г", .year),
+        ("Всё", .allTime)
+    ]
+    
     var body: some View {
         VStack {
             periodPicker
@@ -50,17 +59,28 @@ struct DetailsChartView: View {
         VStack(alignment: .leading) {
             Text("Цена акции")
             
-            Picker("", selection: $detailsController.priceChartTimeDelta) {
-                Text("Ч").tag(TimeDelta.hour)
-                Text("Д").tag(TimeDelta.day)
-                Text("Н").tag(TimeDelta.week)
-                Text("М").tag(TimeDelta.month)
-                Text("Г").tag(TimeDelta.year)
-                Text("Всё").tag(TimeDelta.allTime)
+            HStack {
+                ForEach(Self.availablePeriods, id: \.name) { name, period in
+                    Text(name)
+                        .bold(isSelected(period: period))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 5)
+                        .background(
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(.gray.opacity(0.5))
+                                .opacity(isSelected(period: period) ? 1 : 0)
+                        )
+                        .onTapGesture {
+                            detailsController.priceChartTimeDelta = period
+                        }
+                }
             }
-            .pickerStyle(.segmented)
         }
         .opacity(self.selectionPosition == nil ? 1 : 0)
+    }
+    
+    func isSelected(period: TimeDelta) -> Bool {
+        period == detailsController.priceChartTimeDelta
     }
     
     func getClosestChartData(date: Date) -> ChartData? {
@@ -128,7 +148,7 @@ struct DetailsChartView: View {
                             Text(getFormattedDate(currentActiveItem.begin))
                                 .font(.caption)
                             
-                            Text(String(currentActiveItem.open))
+                            Text(String(currentActiveItem.open) + "₽")
                                 .font(.title3)
                                 .bold()
                         }

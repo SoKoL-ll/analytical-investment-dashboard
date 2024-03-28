@@ -65,6 +65,7 @@ struct IndicatorDetailsView: View {
             
             Spacer()
         }
+        .background(Color(.background))
     }
     
     var indicatorDescription: AttributedString? {

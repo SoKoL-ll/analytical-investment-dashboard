@@ -20,10 +20,13 @@ struct DetailsIndicatorsView: View {
             switch detailsController.indicatorsLoadingState {
             case .fetching:
                 ProgressView()
+                    .padding(.bottom)
             case .loaded:
                 loadedState()
             case .error:
                 Text("ошибка")
+                    .padding(.bottom)
+                    .bold()
             }
         }
         .frame(maxWidth: .infinity)
@@ -34,8 +37,8 @@ struct DetailsIndicatorsView: View {
     
     func loadedState() -> some View {
         VStack(alignment: .leading) {
-//            DetailsIndicatorsBarView()
-//                .padding()
+            DetailsIndicatorsBarView()
+                .padding(.horizontal)
             
             Divider()
             

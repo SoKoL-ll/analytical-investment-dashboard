@@ -27,6 +27,8 @@ final class DetailsController: ObservableObject {
     @Published var indicators: [Indicator] = []
     @Published var indicatorsLoadingState: LoadingState = .fetching
     
+    @Published private(set) var isFavourite: Bool = false
+    
     var indicatorsForView: [Indicator] {
         indicators.filter { $0.value != nil }
             .sorted { $0.type < $1.type }
@@ -36,10 +38,41 @@ final class DetailsController: ObservableObject {
         let pros: Int
         let cons: Int
         
-        var sum: Int { pros + cons }
+        init(pros: Int = 0, cons: Int = 0) {
+            self.pros = pros
+            self.cons = cons
+        }
+        
+        var prosPercentage: Double {
+            if pros + cons == 0 {
+                return 0
+            }
+            
+            return Double(pros) / Double(pros + cons)
+        }
+        
+        var consPercentage: Double {
+            if pros + cons == 0 {
+                return 0
+            }
+            
+            return Double(cons) / Double(pros + cons)
+        }
     }
     
-    var tickerProsConsData: ProsConsData {
+    var tickerProsConsData: ProsConsData = ProsConsData()
+    
+    init(ticker: String) {
+        self.ticker = ticker
+        loadFavouriteState()
+    }
+    
+    func loadFavouriteState() {
+        let favourites = UserDefaults.standard.stringArray(forKey: "favourites") ?? []
+        isFavourite = favourites.contains(ticker)
+    }
+    
+    func updateProsConsData() {
         var prosCount = 0
         var consCount = 0
         
@@ -55,11 +88,20 @@ final class DetailsController: ObservableObject {
             }
         }
         
-        return ProsConsData(pros: prosCount, cons: consCount)
+        tickerProsConsData = ProsConsData(pros: prosCount, cons: consCount)
     }
     
-    init(ticker: String) {
-        self.ticker = ticker
+    func switchFavouriteState() {
+        var favourites = Set(UserDefaults.standard.stringArray(forKey: "favourites") ?? [])
+        
+        if isFavourite {
+            favourites.remove(ticker)
+        } else {
+            favourites.insert(ticker)
+        }
+        
+        UserDefaults.standard.setValue(Array(favourites), forKey: "favourites")
+        isFavourite.toggle()
     }
     
     func loadPriceChartData() {
@@ -106,6 +148,8 @@ final class DetailsController: ObservableObject {
                 self.tickerFullName = data.fullName
                 self.indicators = data.indicators
                 self.indicatorsLoadingState = .loaded
+                
+                self.updateProsConsData()
             case .failure(let error):
                 self.indicatorsLoadingState = .error(error)
             }

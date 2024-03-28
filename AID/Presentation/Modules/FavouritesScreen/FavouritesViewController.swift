@@ -7,13 +7,15 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 protocol FavouritesViewControllerProtocol: AnyObject {
     func setContent(companies: [String])
+    
+    func pushCompanyDetailsViewController(companyName: String)
 }
 
 class FavouritesViewController: UIViewController {
-
     var presenter: FavouritesScreenPresenterProtocol?
 
     override func viewDidLoad() {
@@ -48,6 +50,15 @@ extension FavouritesViewController: FavouritesViewControllerProtocol {
         scrollView.snp.makeConstraints { make in
             make.top.bottom.leading.trailing.equalToSuperview()
         }
+    }
+    
+    func pushCompanyDetailsViewController(companyName: String) {
+        let controller = UIHostingController(rootView: DetailsView()
+            .environmentObject(DetailsController(ticker: companyName)))
+        
+        self.navigationController?.pushViewController(controller, animated: true)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
     }
 }
 

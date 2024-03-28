@@ -59,7 +59,6 @@ class MainScreenPresenter: MainScreenPresenterProtocol {
 
     // Вызывается при нажатии на какую-либо компанию
     func openInfoAboutCompany(companyName: String) {
-        print("pressed \(companyName)")
         view?.pushCompanyDetailsViewController(companyName: companyName)
     }
 }

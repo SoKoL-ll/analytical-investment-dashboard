@@ -19,16 +19,16 @@ struct DetailsView: View {
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(Color(UIColor.systemBackground))
-                            .shadow(radius: 2)
+                            .fill(Color(.backgroundPage))
+//                            .shadow(radius: 2)
                     )
                     .padding(.bottom)
                 
                 DetailsIndicatorsView()
                     .background(
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(Color(UIColor.systemBackground))
-                            .shadow(radius: 2)
+                            .fill(Color(.backgroundPage))
+//                            .shadow(radius: 2)
                     )
                 
                 Spacer()
@@ -43,10 +43,13 @@ struct DetailsView: View {
         .navigationTitle(detailsController.ticker)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Add to favourites", systemImage: "star") {
-                    print("Super star!")
+                Button("Add to favourites", systemImage: detailsController.isFavourite ? "star.fill" : "star") {
+                    detailsController.switchFavouriteState()
                 }
             }
+        }
+        .onAppear {
+            detailsController.loadFavouriteState()
         }
     }
 }

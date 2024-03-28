@@ -21,9 +21,9 @@ extension Indicator {
             return nil
         }
         
-        if verdict < 0 {
+        if verdict < 0.2 {
             return .init(color: Color(.red), symbolSystemName: "minus", description: "Стоит продавать")
-        } else if verdict > 0 {
+        } else if verdict > 0.2 {
             return .init(color: Color(.green), symbolSystemName: "plus", description: "Стоит покупать")
         }
         

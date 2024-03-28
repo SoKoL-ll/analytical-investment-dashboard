@@ -12,39 +12,36 @@ struct DetailsIndicatorsBarView: View {
     
     var body: some View {
         VStack {
-            HStack(spacing: 0) {
-                Rectangle()
-                    .fill(.red)
-                    .frame(height: 10)
-                    .containerRelativeFrame(
-                        .horizontal,
-                        count: detailsController.tickerProsConsData.sum,
-                        span: detailsController.tickerProsConsData.cons,
-                        spacing: 0
-                    )
-                
-                Rectangle()
-                    .fill(.green)
-                    .frame(height: 10)
-                    .containerRelativeFrame(
-                        .horizontal,
-                        count: detailsController.tickerProsConsData.sum,
-                        span: detailsController.tickerProsConsData.pros,
-                        spacing: 0
-                    )
+            Text("Стоит покупать").textCase(.uppercase).fontWeight(.black).foregroundStyle(Color(.green))
+                .frame(maxWidth: .infinity, alignment: .center)
+            
+            GeometryReader { metrics in
+                HStack(spacing: 0) {
+                    Rectangle()
+                        .fill(Color(.red))
+                        .frame(width: metrics.size.width * detailsController.tickerProsConsData.consPercentage, height: 10)
+                    
+                    Rectangle()
+                        .fill(Color(.green))
+                        .frame(width: metrics.size.width * detailsController.tickerProsConsData.prosPercentage, height: 10)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 10))
             }
-            .clipShape(RoundedRectangle(cornerRadius: 10))
             
             HStack {
-                Text("- \(detailsController.tickerProsConsData.cons)")
-                    .bold()
-                    .foregroundStyle(Color(.red))
+                if detailsController.tickerProsConsData.cons != 0 {
+                    Text("- \(detailsController.tickerProsConsData.cons)")
+                        .bold()
+                        .foregroundStyle(Color(.red))
+                }
                 
                 Spacer()
                 
-                Text("+ \(detailsController.tickerProsConsData.pros)")
-                    .bold()
-                    .foregroundStyle(Color(.green))
+                if detailsController.tickerProsConsData.pros != 0 {
+                    Text("+ \(detailsController.tickerProsConsData.pros)")
+                        .bold()
+                        .foregroundStyle(Color(.green))
+                }
             }
         }
     }
