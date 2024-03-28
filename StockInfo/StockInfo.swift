@@ -19,18 +19,24 @@ struct Provider: TimelineProvider {
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<StockInfoEntry>) -> Void) {
-        getStock("SBER", with: "profitability") { result in
+        var firstFavorite = UserDefaults.standard.stringArray(forKey: Constants.UserDefaultsKeys.favourites.rawValue)?.first ?? Constants.Default.ticker
+        var indicator = UserDefaults.standard.stringArray(forKey: Constants.UserDefaultsKeys.indicator.rawValue)?.first ?? Constants.Default.indicator
+        getStock(firstFavorite, with: indicator) { result in
+            var policy: TimelineReloadPolicy = .never
+            if let nextDate = Calendar.current.date(byAdding: .minute, value: Constants.Default.updateOffset, to: Date()) {
+                policy = .after(nextDate)
+            }
             switch result {
             case .success(let stockInfoWidgetModelNew):
                 completion(.init(
                     entries: [.init(date: Date(), widgetData: stockInfoWidgetModelNew)],
-                    policy: .after(Calendar.current.date(byAdding: .minute, value: 15, to: Date())!)
+                    policy: policy
                     )
                 )
             case .failure:
                 completion(.init(
                     entries: [Constants.Default.widgetEntry],
-                    policy: .after(Calendar.current.date(byAdding: .minute, value: 15, to: Date())!)
+                    policy: policy
                     )
                 )
             }
@@ -206,7 +212,18 @@ private struct Constants {
         static let format = "%.3f"
     }
     
+    enum UserDefaultsKeys: String {
+        case favourites, indicator
+    }
+    
     struct Default {
+        static let ticker = "YNDX"
+        static let indicator = "profitability"
+        static let updateOffset = 15
+        
+        static let image = Image("DefaultImage")
+        static let pricePrefix = "₽"
+        
         static let model: StockInfoWidgetModel = {
             let model = StockInfoWidgetModel(
                 ticker: "AID",
@@ -231,9 +248,5 @@ private struct Constants {
             )
             return StockInfoEntry(date: Date(), widgetData: .init(model: model, image: image))
         }()
-        
-        static let image = Image("DefaultImage")
-        
-        static let pricePrefix = "₽"
     }
 }
