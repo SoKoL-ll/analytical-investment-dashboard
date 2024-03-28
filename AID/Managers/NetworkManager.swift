@@ -9,10 +9,10 @@ import Foundation
 import Alamofire
 
 protocol NetworkManagerDescription {
-    func getStocks(with indicatorType: String, complition: @escaping (Result<[Stock], AIDError>) -> Void)
-    func getStockIndicators(_ stockName: String, complition: @escaping (Result<StockInfo, AIDError>) -> Void)
-    func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, complition: @escaping (Result<[ChartData], AIDError>) -> Void)
-    func getCategories(complition: @escaping (Result<[String], AIDError>) -> Void)
+    func getStocks(with indicatorType: String, completion: @escaping (Result<([Stock], [Index]), AIDError>) -> Void)
+    func getStockIndicators(_ stockName: String, completion: @escaping (Result<StockInfo, AIDError>) -> Void)
+    func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, completion: @escaping (Result<[ChartData], AIDError>) -> Void)
+    func getCategories(completion: @escaping (Result<[String], AIDError>) -> Void)
 }
 
 final class NetworkManager: NetworkManagerDescription {
@@ -22,118 +22,112 @@ final class NetworkManager: NetworkManagerDescription {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }()
+    private lazy var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = Constants.Dates.dateFormat
+        return dateFormatter
+    }()
     
     private init() {}
     
-    func getStocks(with indicatorType: String, complition: @escaping (Result<[Stock], AIDError>) -> Void) {
+    func getStocks(with indicatorType: String, completion: @escaping (Result<([Stock], [Index]), AIDError>) -> Void) {
         guard let endpointURL = generateBasicAPIURL() else {
-            complition(.failure(.invalidResponse))
+            completion(.failure(.invalidResponse))
             return
         }
         
-        var stockArray: [Stock] = []
         let parameters: [String: String] = generateParameter(value: indicatorType.description, parameter: .category)
         AF.request(endpointURL, method: .post, parameters: parameters, encoder: JSONParameterEncoder.default)
             .responseDecodable(of: StockResponse.self, decoder: snakeDecoder) { response in
                 switch response.result {
                 case .success(let stocks):
-                    for stock in stocks.tickers {
-                        let indicator = Indicator(type: indicatorType, value: stock.value.value, postfix: stocks.postfix)
-                        let stockElem = Stock(ticker: stock.key, indicator: indicator)
-                        stockArray.append(stockElem)
+                    let stockArray: [Stock] = stocks.tickers.map { key, value in
+                        let indicator = Indicator(type: indicatorType, value: value.value, postfix: stocks.postfix)
+                        return Stock(ticker: key, indicator: indicator)
+                    }
+                    let indexArray: [Index] = stocks.indices.map { key, value in
+                        let index = Index(shortName: key, fullName: value.name, tickers: value.tickers)
+                        return index
                     }
                     
-                    complition(.success(stockArray))
+                    completion(.success((stockArray, indexArray)))
                 case .failure:
-                    complition(.failure(.invalidResponse))
+                    completion(.failure(.invalidResponse))
                 }
             }
     }
     
-    func getStockIndicators(_ stockName: String, complition: @escaping (Result<StockInfo, AIDError>) -> Void) {
+    func getStockIndicators(_ stockName: String, completion: @escaping (Result<StockInfo, AIDError>) -> Void) {
         guard let endpointURL = generateStockAPIURL(stockTicker: stockName, type: .indicators) else {
-            complition(.failure(.invalidResponse))
+            completion(.failure(.invalidResponse))
             return
         }
         
-        var indicatorArray: [Indicator] = []
         AF.request(endpointURL, method: .post)
             .responseDecodable(of: StockIndicatorsResponse.self, decoder: snakeDecoder) { response in
                 switch response.result {
                 case .success(let stockIndicators):
-                    for indicator in stockIndicators.items {
-                        let indicatorElem = Indicator(type: indicator.key,
-                                                      value: indicator.value.value,
-                                                      postfix: indicator.value.postfix,
-                                                      name: indicator.value.name,
-                                                      description: indicator.value.description,
-                                                      verdict: indicator.value.verdict)
-                        indicatorArray.append(indicatorElem)
+                    let indicatorArray: [Indicator] = stockIndicators.items.map { key, value in
+                        return Indicator(type: key,
+                                         value: value.value,
+                                         postfix: value.postfix,
+                                         description: value.description,
+                                         verdict: value.verdict)
                     }
+                    let stockInfo: StockInfo = .init(name: stockIndicators.shortName,
+                                                     description: stockIndicators.fullName,
+                                                     price: stockIndicators.price,
+                                                     indicators: indicatorArray)
                     
-                    let stockInfo = StockInfo(
-                        shortName: stockIndicators.shortName,
-                        fullName: stockIndicators.fullName,
-                        price: stockIndicators.price, 
-                        indicators: indicatorArray
-                    )
-                    
-                    complition(.success(stockInfo))
+                    completion(.success(stockInfo))
                 case .failure:
-                    complition(.failure(.invalidResponse))
+                    completion(.failure(.invalidResponse))
                 }
             }
     }
     
-    func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, complition: @escaping (Result<[ChartData], AIDError>) -> Void) {
+    func getStockPrices(_ stockName: String, in timeDelta: TimeDelta, completion: @escaping (Result<[ChartData], AIDError>) -> Void) {
         guard let endpointURL = generateStockAPIURL(stockTicker: stockName, type: .prices) else {
-            complition(.failure(.invalidResponse))
+            completion(.failure(.invalidResponse))
             return
         }
         
-        var chartDataArray: [ChartData] = []
         let parameters: [String: String] = generateParameter(value: timeDelta.description, parameter: .period)
-        
         AF.request(endpointURL, method: .post, parameters: parameters, encoder: JSONParameterEncoder.default)
-            .responseDecodable(of: StockPricesResponse.self) { response in
+            .responseDecodable(of: StockPricesResponse.self) { [weak self] response in
+                guard let self = self else {
+                    return
+                }
+                
                 switch response.result {
                 case .success(let stockPrices):
-                    let dateFormatter: DateFormatter = {
-                        let dateFormatter = DateFormatter()
-                        dateFormatter.dateFormat = Constants.Dates.dateFormat
-                        return dateFormatter
-                    }()
-                    
-                    for stockPrice in stockPrices.items {
-                        let beginDateString = stockPrice.begin
-                        let endDateString = stockPrice.end
+                    let chartDataArray: [ChartData] = stockPrices.items.compactMap { [weak self] priceInfo in
                         guard
-                            let stockPriceBeginDate = dateFormatter.date(from: beginDateString),
-                            let stockPriceEndDate = dateFormatter.date(from: endDateString)
+                            let self = self,
+                            let stockPriceBeginDate = dateFormatter.date(from: priceInfo.begin),
+                            let stockPriceEndDate = dateFormatter.date(from: priceInfo.end)
                         else {
-                            complition(.failure(.invalidData))
-                            return
+                            return nil
                         }
                         
-                        let chartData = ChartData(open: stockPrice.open,
-                                                  close: stockPrice.close,
-                                                  high: stockPrice.high,
-                                                  low: stockPrice.low,
-                                                  begin: stockPriceBeginDate,
-                                                  end: stockPriceEndDate)
-                        chartDataArray.append(chartData)
+                        return ChartData(open: priceInfo.open,
+                                         close: priceInfo.close,
+                                         high: priceInfo.high,
+                                         low: priceInfo.low,
+                                         begin: stockPriceBeginDate,
+                                         end: stockPriceEndDate)
                     }
                     
-                    complition(.success(chartDataArray))
+                    completion(.success(chartDataArray))
                 case .failure:
-                    complition(.failure(.invalidResponse))
+                    completion(.failure(.invalidResponse))
                 }
             }
     }
     
-    func getCategories(complition: @escaping (Result<[String], AIDError>) -> Void) {
+    func getCategories(completion: @escaping (Result<[String], AIDError>) -> Void) {
         guard let endpointURL = generateBasicAPIURL(endpoint: Constants.categoriesEndpoint) else {
-            complition(.failure(.invalidResponse))
+            completion(.failure(.invalidResponse))
             return
         }
         
@@ -141,15 +135,18 @@ final class NetworkManager: NetworkManagerDescription {
             .responseDecodable(of: CategoriesResponse.self) { response in
                 switch response.result {
                 case .success(let categories):
-                    complition(.success(categories.categories))
+                    completion(.success(categories.categories))
                 case .failure:
-                    complition(.failure(.invalidResponse))
+                    completion(.failure(.invalidResponse))
                 }
             }
     }
 }
 
 private extension NetworkManager {
+    
+    // MARK: - Generating functions
+    
     func generateBasicAPIURL(endpoint: String? = nil) -> URL? {
         let baseURL = Constants.scheme + Constants.host
         var endpointURL = baseURL
@@ -170,6 +167,8 @@ private extension NetworkManager {
         return [parameter.rawValue: value]
     }
     
+    // MARK: - Request cases
+    
     enum Parameter: String {
         case period
         case category
@@ -179,6 +178,8 @@ private extension NetworkManager {
         case prices = "/chart"
         case indicators = "/values"
     }
+    
+    // MARK: - Constants
     
     struct Constants {
         static let scheme = "http://"

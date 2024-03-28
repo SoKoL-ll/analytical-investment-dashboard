@@ -12,6 +12,20 @@ options:
   bundleIdPrefix: com
 # Список целей (таргетов)
 targets:
+  StockInfo:
+    type: app-extension
+    platform: iOS
+    settings:
+      INFOPLIST_FILE: StockInfo/Info.plist
+      PROVISIONING_PROFILE_SPECIFIER_Release: Development - Widget Extension
+      OTHER_LDFLAGS: $(inherited) -framework WidgetKit
+      PRODUCT_BUNDLE_IDENTIFIER: com.AID.StockInfo
+    dependencies:
+      - package: SnapKit
+        product: SnapKit
+      - package: Alamofire
+        product: Alamofire
+    sources: [StockInfo]
   AID:
     type: application
     platform: iOS
@@ -21,6 +35,7 @@ targets:
         product: SnapKit
       - package: Alamofire
         product: Alamofire
+      - target: StockInfo
     sources: [AID]
     postCompileScripts:
       - script: |

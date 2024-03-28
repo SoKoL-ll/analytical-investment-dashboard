@@ -112,7 +112,7 @@ final class DetailsController: ObservableObject {
         
         self.priceChartLoadingState = .fetching
         
-        NetworkManager.shared.getStockPrices(ticker, in: delta, complition: { [weak self, delta] response in
+        NetworkManager.shared.getStockPrices(ticker, in: delta, completion: { [weak self, delta] response in
             guard let self = self else {
                 return
             }
@@ -137,16 +137,16 @@ final class DetailsController: ObservableObject {
         
         indicatorsLoadingState = .fetching
         
-        NetworkManager.shared.getStockIndicators(ticker, complition: { [weak self] result in
+        NetworkManager.shared.getStockIndicators(ticker, completion: { [weak self] result in
             guard let self = self else {
                 return
             }
             
             switch result {
-            case .success(let data):
-                self.tickerShortName = data.shortName
-                self.tickerFullName = data.fullName
-                self.indicators = data.indicators
+            case .success(let stockInfo):
+                self.tickerShortName = stockInfo.name
+                self.tickerFullName = stockInfo.description
+                self.indicators = stockInfo.indicators
                 self.indicatorsLoadingState = .loaded
                 
                 self.updateProsConsData()

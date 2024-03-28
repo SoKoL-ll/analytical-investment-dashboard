@@ -22,7 +22,7 @@ struct IndicatorDetailsView: View {
     
     var body: some View {
         ScrollView {
-            Text(indicator.name ?? "")
+            Text(indicator.description ?? "")
                 .multilineTextAlignment(.center)
                 .font(.headline)
                 .padding([.top, .horizontal])

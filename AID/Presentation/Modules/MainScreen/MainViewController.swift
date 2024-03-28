@@ -72,7 +72,7 @@ final class MainViewController: UIViewController {
 
         pageControl.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.bottom.equalToSuperview().inset(Constants.tabBarMargin)
         }
     }
 
