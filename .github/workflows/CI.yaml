@@ -13,9 +13,9 @@ jobs:
 
     - name: Set up Xcode
       run: |
-        sudo xcode-select --switch /Applications/Xcode_13.2.app # Указание пути к Xcode
+        sudo xcode-select --switch /Applications/Xcode_15.3.app # Указание пути к Xcode
         sudo xcodebuild -runFirstLaunch # Запуск Xcode для инициализации
-        
+
     - name: Install dependencies
       run: |
         brew install xcodegen
@@ -24,7 +24,7 @@ jobs:
       run: |
         make gen
 
-    - name: Prepare iOS 15 simulator
+    - name: Prepare iOS 17 simulator
       run: |
         sudo mkdir -p /Library/Developer/CoreSimulator/Profiles/Runtimes
         sudo ln -s /Applications/Xcode_15.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime /Library/Developer/CoreSimulator/Profiles/Runtimes/iOS\ 17.0.simruntime
