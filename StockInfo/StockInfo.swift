@@ -19,12 +19,20 @@ struct Provider: TimelineProvider {
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<StockInfoEntry>) -> Void) {
-        getStock("YNDX", with: "profitability") { result in
+        getStock("SBER", with: "profitability") { result in
             switch result {
             case .success(let stockInfoWidgetModelNew):
-                completion(.init(entries: [.init(date: Date(), widgetData: stockInfoWidgetModelNew)], policy: .never))
+                completion(.init(
+                    entries: [.init(date: Date(), widgetData: stockInfoWidgetModelNew)],
+                    policy: .after(Calendar.current.date(byAdding: .minute, value: 15, to: Date())!)
+                    )
+                )
             case .failure:
-                completion(.init(entries: [Constants.Default.widgetEntry], policy: .never))
+                completion(.init(
+                    entries: [Constants.Default.widgetEntry],
+                    policy: .after(Calendar.current.date(byAdding: .minute, value: 15, to: Date())!)
+                    )
+                )
             }
         }
     }
@@ -75,7 +83,7 @@ struct StockInfo: Widget {
         }
         .configurationDisplayName("Stock info Widget")
         .description("Some information about your favorite stock.")
-//        .supportedFamilies([.systemSmall])
+        .supportedFamilies([.systemSmall])
     }
 }
 
