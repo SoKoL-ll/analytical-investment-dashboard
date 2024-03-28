@@ -16,11 +16,6 @@ jobs:
       run: |
         make gen
 
-    - name: Set up Xcode
-      uses: actions/setup-xcode@v2
-      with:
-        xcode-version: '15.3'
-
     - name: Run unit tests
       run: |
         xcodebuild -project AID.xcodeproj -scheme AIDUnitTests -destination 'platform=iOS Simulator,name=iPhone 13' test | xcpretty
