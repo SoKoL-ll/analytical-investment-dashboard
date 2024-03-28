@@ -12,6 +12,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Install dependencies
+      run: |
+        brew install xcodegen
+        
     - name: Generate Xcode project
       run: |
         make gen
