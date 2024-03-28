@@ -39,6 +39,6 @@ class FavouritesScreenPresenter: FavouritesScreenPresenterProtocol {
 
     // Вызывается при нажатии на какую-либо компанию
     func openInfoAboutCompany(companyName: String) {
-        print("\(companyName) did taped")
+        view?.pushCompanyDetailsViewController(companyName: companyName)
     }
 }

@@ -7,25 +7,29 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 protocol FavouritesViewControllerProtocol: AnyObject {
     func setContent(companies: [String])
+    
+    func pushCompanyDetailsViewController(companyName: String)
 }
 
 class FavouritesViewController: UIViewController {
-
     var presenter: FavouritesScreenPresenterProtocol?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = .background
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         presenter?.launchData()
     }
-
+    
     override func viewDidDisappear(_ animated: Bool) {
         view.subviews.forEach {
             $0.removeFromSuperview()
@@ -48,6 +52,15 @@ extension FavouritesViewController: FavouritesViewControllerProtocol {
         scrollView.snp.makeConstraints { make in
             make.top.bottom.leading.trailing.equalToSuperview()
         }
+    }
+    
+    func pushCompanyDetailsViewController(companyName: String) {
+        let controller = NavigationHostingController(
+            rootView: DetailsView()
+                .environmentObject(DetailsController(ticker: companyName))
+        )
+        
+        self.navigationController?.pushViewController(controller, animated: true)
     }
 }
 
