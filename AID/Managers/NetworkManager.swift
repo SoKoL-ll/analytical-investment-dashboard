@@ -96,8 +96,8 @@ final class NetworkManager: NetworkManagerDescription {
                     let chartDataArray: [ChartData] = stockPrices.items.compactMap { [weak self] priceInfo in
                         guard
                             let self = self,
-                            let stockPriceBeginDate = dateFormatter.date(from: priceInfo.begin),
-                            let stockPriceEndDate = dateFormatter.date(from: priceInfo.end)
+                            let stockPriceBeginDate = self.dateFormatter.date(from: priceInfo.begin),
+                            let stockPriceEndDate = self.dateFormatter.date(from: priceInfo.end)
                         else {
                             return nil
                         }
