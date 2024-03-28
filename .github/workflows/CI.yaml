@@ -35,8 +35,8 @@ jobs:
 #        xcversion simulators --install='iOS 17.0'
     - name: Run unit tests
       run: |
-        xcodebuild test -scheme AIDUnitTests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 15,OS=16.0' | xcpretty
+        xcodebuild test -scheme AIDUnitTests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=16.0' | xcpretty
 
     - name: Run UI tests
       run: |
-        xcodebuild test -scheme AIDUITests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 15,OS=16.0' | xcpretty
+        xcodebuild test -scheme AIDUITests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=16.0' | xcpretty
