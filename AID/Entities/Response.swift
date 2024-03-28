@@ -9,7 +9,7 @@ import Foundation
 
 struct StockResponse: Decodable {
     let message: String
-    let items: [String: Price]
+    let tickers: [String: Price]
     let postfix: String
     let updatedAt: String
 }
@@ -21,7 +21,9 @@ struct StockPricesResponse: Decodable {
 
 struct StockIndicatorsResponse: Decodable {
     let message: String
-    let tickerFullName: String
+    let shortName: String
+    let fullName: String
+    let price: Double
     let items: [String: IndicatorInfo]
 }
 
@@ -33,8 +35,9 @@ struct CategoriesResponse: Decodable {
 struct IndicatorInfo: Decodable {
     let value: Double?
     let postfix: String
+    let name: String
     let description: String
-    let shouldBuy: Bool
+    let verdict: Double?
 }
 
 struct Price: Decodable {

@@ -16,6 +16,8 @@ final class TabBarViewController: UITabBarController {
         let mainViewPresenter = MainScreenPresenter(view: mainViewController)
 
         mainViewController.presenter = mainViewPresenter
+        
+        let navigationController = UINavigationController(rootViewController: mainViewController)
 
         let account = self.createNavigation(
             with: Texts.tabBarAccount,
