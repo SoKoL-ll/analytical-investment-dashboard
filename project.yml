@@ -15,7 +15,7 @@ targets:
   AID:
     type: application
     platform: iOS
-    deploymentTarget: "17.0"
+    deploymentTarget: "16.0"
     dependencies:
       - package: SnapKit
         product: SnapKit
@@ -55,7 +55,7 @@ targets:
   AIDUnitTests: # Цель для юнит-тестов
     type: bundle.unit-test
     platform: iOS
-    deploymentTarget: "17.0"
+    deploymentTarget: "16.0"
     dependencies:
       - target: AID # Зависимость от основной цели вашего приложения
     sources: [AIDUnitTests] # Директория с исходными файлами тестов
@@ -68,7 +68,7 @@ targets:
   AIDUITests: # Цель для UI-тестов
     type: bundle.ui-testing # Тип для UI-тестов
     platform: iOS
-    deploymentTarget: "17.0"
+    deploymentTarget: "16.0"
     dependencies:
       - target: AID # Зависимость от основной цели вашего приложения
     sources: [AIDUITests] # Директория с исходными файлами UI-тестов
