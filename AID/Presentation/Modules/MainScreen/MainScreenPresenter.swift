@@ -49,7 +49,7 @@ class MainScreenPresenter: MainScreenPresenterProtocol {
         
             switch result {
             case .success(let stocks):
-                let companies = stocks.map { $0.ticker }
+                let companies = stocks.0.map { $0.ticker }
                 self.view?.setContent(companies: Array(companies.prefix(11)))
             case .failure(let error):
                 print(error)
@@ -59,6 +59,6 @@ class MainScreenPresenter: MainScreenPresenterProtocol {
 
     // Вызывается при нажатии на какую-либо компанию
     func openInfoAboutCompany(companyName: String) {
-        print("\(companyName) did taped")
+        view?.pushCompanyDetailsViewController(companyName: companyName)
     }
 }

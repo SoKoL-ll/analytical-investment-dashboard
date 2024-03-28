@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import SwiftUI
 import SnapKit
 
 protocol MainViewControllerProtocol: AnyObject {
     func setContent(companies: [String])
+    
+    func pushCompanyDetailsViewController(companyName: String)
 }
 
 final class MainViewController: UIViewController {
@@ -176,6 +179,15 @@ extension MainViewController: MainViewControllerProtocol {
         if !(self.swipeableViews.isEmpty) {
             self.plugPageView.isHidden = true
         }
+    }
+    
+    func pushCompanyDetailsViewController(companyName: String) {
+        let controller = NavigationHostingController(
+            rootView: DetailsView()
+                .environmentObject(DetailsController(ticker: companyName))
+        )
+        
+        self.navigationController?.pushViewController(controller, animated: true)
     }
 }
 
