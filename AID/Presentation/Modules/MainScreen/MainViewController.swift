@@ -182,12 +182,12 @@ extension MainViewController: MainViewControllerProtocol {
     }
     
     func pushCompanyDetailsViewController(companyName: String) {
-        let controller = UIHostingController(rootView: DetailsView()
-            .environmentObject(DetailsController(ticker: companyName)))
+        let controller = NavigationHostingController(
+            rootView: DetailsView()
+                .environmentObject(DetailsController(ticker: companyName))
+        )
         
         self.navigationController?.pushViewController(controller, animated: true)
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
     }
 }
 

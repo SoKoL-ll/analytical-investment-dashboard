@@ -7,11 +7,18 @@
 
 import Foundation
 import Observation
+import SwiftUI
 
 enum LoadingState {
     case fetching
     case loaded
     case error(Error)
+}
+
+struct IndicatorVerdictInfo {
+    let color: Color
+    let symbolSystemName: String?
+    let description: String
 }
 
 final class DetailsController: ObservableObject {
@@ -30,7 +37,7 @@ final class DetailsController: ObservableObject {
     @Published private(set) var isFavourite: Bool = false
     
     var indicatorsForView: [Indicator] {
-        indicators.filter { $0.value != nil }
+        return indicators.filter { $0.value != nil }
             .sorted { $0.type < $1.type }
     }
     
@@ -58,6 +65,14 @@ final class DetailsController: ObservableObject {
             
             return Double(cons) / Double(pros + cons)
         }
+        
+        var verdict: Double? {
+            if pros + cons < 5 {
+                return nil
+            }
+            
+            return Double(pros - cons) / Double(pros + cons)
+        }
     }
     
     var tickerProsConsData: ProsConsData = ProsConsData()
@@ -65,6 +80,21 @@ final class DetailsController: ObservableObject {
     init(ticker: String) {
         self.ticker = ticker
         loadFavouriteState()
+    }
+    
+    // returns system name of verdict image and color for that image
+    static func getVerdictViewInformation(_ verdict: Double?) -> IndicatorVerdictInfo {
+        guard let verdict else {
+            return .init(color: .secondary, symbolSystemName: nil, description: "Недостаточно данных")
+        }
+        
+        if verdict < -Constants.neutralVerdictThreshold {
+            return .init(color: Color(.red), symbolSystemName: "minus", description: "Стоит продавать")
+        } else if verdict > Constants.neutralVerdictThreshold {
+            return .init(color: Color(.green), symbolSystemName: "plus", description: "Стоит покупать")
+        }
+        
+        return .init(color: .secondary, symbolSystemName: "equal", description: "Нейтрально")
     }
     
     func loadFavouriteState() {
@@ -81,9 +111,9 @@ final class DetailsController: ObservableObject {
                 continue
             }
             
-            if verdict < 0 {
+            if verdict < -Constants.neutralVerdictThreshold {
                 consCount += 1
-            } else if verdict > 0 {
+            } else if verdict > Constants.neutralVerdictThreshold {
                 prosCount += 1
             }
         }
@@ -164,5 +194,11 @@ final class DetailsController: ObservableObject {
     func reloadIndicators() {
         indicators.removeAll()
         loadIndicators()
+    }
+}
+
+private extension DetailsController {
+    struct Constants {
+        static let neutralVerdictThreshold: Double = 0.2
     }
 }

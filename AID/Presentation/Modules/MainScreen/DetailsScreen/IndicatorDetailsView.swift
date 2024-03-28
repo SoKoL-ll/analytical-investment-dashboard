@@ -16,13 +16,13 @@ struct IndicatorDetailsView: View {
         self.indicator = indicator
     }
     
-    var verdictInformation: IndicatorVertictInfo? {
-        indicator.getVerdictViewInformation()
+    var verdictInformation: IndicatorVerdictInfo {
+        DetailsController.getVerdictViewInformation(indicator.verdict)
     }
     
     var body: some View {
         ScrollView {
-            Text(indicator.description ?? "")
+            Text(indicator.name ?? "")
                 .multilineTextAlignment(.center)
                 .font(.headline)
                 .padding([.top, .horizontal])
@@ -36,16 +36,16 @@ struct IndicatorDetailsView: View {
                         .font(.system(size: 30))
                         .frame(height: 50)
                 }
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 
-                if let verdictInformation {
+                if let systemName = verdictInformation.symbolSystemName {
                     Divider()
                     
                     VStack {
                         Text("Вердикт:")
                         
                         VStack {
-                            Image(systemName: verdictInformation.symbolSystemName)
+                            Image(systemName: systemName)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 50, height: 50)

@@ -10,7 +10,16 @@ import Charts
 
 struct DetailsView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var scheme
     @EnvironmentObject private var detailsController: DetailsController
+    
+    var navbarColor: Color {
+        Color(
+            UIColor(named: "Background")?
+                .resolvedColor(with: .init(userInterfaceStyle: scheme == .dark ? .dark : .light)
+                              ) ?? .white
+        )
+    }
     
     var body: some View {
         ScrollView {
@@ -20,7 +29,6 @@ struct DetailsView: View {
                     .background(
                         RoundedRectangle(cornerRadius: 10)
                             .fill(Color(.backgroundPage))
-//                            .shadow(radius: 2)
                     )
                     .padding(.bottom)
                 
@@ -28,7 +36,6 @@ struct DetailsView: View {
                     .background(
                         RoundedRectangle(cornerRadius: 10)
                             .fill(Color(.backgroundPage))
-//                            .shadow(radius: 2)
                     )
                 
                 Spacer()
@@ -48,6 +55,8 @@ struct DetailsView: View {
                 }
             }
         }
+        
+        .toolbarBackground(navbarColor, for: .navigationBar)
         .onAppear {
             detailsController.loadFavouriteState()
         }

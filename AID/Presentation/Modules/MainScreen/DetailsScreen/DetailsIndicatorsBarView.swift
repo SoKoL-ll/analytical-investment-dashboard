@@ -10,22 +10,31 @@ import SwiftUI
 struct DetailsIndicatorsBarView: View {
     @EnvironmentObject private var detailsController: DetailsController
     
+    var verdictInfo: IndicatorVerdictInfo {
+        DetailsController.getVerdictViewInformation(detailsController.tickerProsConsData.verdict)
+    }
+    
     var body: some View {
         VStack {
-            Text("Стоит покупать").textCase(.uppercase).fontWeight(.black).foregroundStyle(Color(.green))
+            Text(verdictInfo.description)
+                .textCase(.uppercase)
+                .fontWeight(.black)
+                .foregroundStyle(verdictInfo.color)
                 .frame(maxWidth: .infinity, alignment: .center)
             
-            GeometryReader { metrics in
-                HStack(spacing: 0) {
-                    Rectangle()
-                        .fill(Color(.red))
-                        .frame(width: metrics.size.width * detailsController.tickerProsConsData.consPercentage, height: 10)
-                    
-                    Rectangle()
-                        .fill(Color(.green))
-                        .frame(width: metrics.size.width * detailsController.tickerProsConsData.prosPercentage, height: 10)
+            if detailsController.tickerProsConsData.pros + detailsController.tickerProsConsData.cons != 0 {
+                GeometryReader { metrics in
+                    HStack(spacing: 0) {
+                        Rectangle()
+                            .fill(Color(.red))
+                            .frame(width: metrics.size.width * detailsController.tickerProsConsData.consPercentage, height: 10)
+                        
+                        Rectangle()
+                            .fill(Color(.green))
+                            .frame(width: metrics.size.width * detailsController.tickerProsConsData.prosPercentage, height: 10)
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 10))
             }
             
             HStack {

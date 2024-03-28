@@ -16,8 +16,6 @@ final class TabBarViewController: UITabBarController {
         let mainViewPresenter = MainScreenPresenter(view: mainViewController)
 
         mainViewController.presenter = mainViewPresenter
-        
-        let navigationController = UINavigationController(rootViewController: mainViewController)
 
         let favouritesViewController = FavouritesViewController()
         let favouritesViewPresenter = FavouritesScreenPresenter(view: favouritesViewController)

@@ -75,10 +75,10 @@ struct DetailsIndicatorsView: View {
     
     @ViewBuilder
     func getIndicatorVerdictView(_ indicator: Indicator) -> some View {
-        let info = indicator.getVerdictViewInformation()
+        let info = DetailsController.getVerdictViewInformation(indicator.verdict)
         
-        if let info {
-            Image(systemName: info.symbolSystemName)
+        if let systemName = info.symbolSystemName {
+            Image(systemName: systemName)
                 .foregroundStyle(info.color)
                 .fontWeight(.bold)
         } else {
