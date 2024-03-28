@@ -19,9 +19,9 @@ jobs:
       run: |
         make gen
 
-    -name: Set iOS Version
-    run: |
-        xcversion simulators --install='iOS 17.0'
+#    -name: Set iOS Version
+#    run: |
+#        xcversion simulators --install='iOS 17.0'
     - name: Run unit tests
       run: |
         xcodebuild test -scheme AIDUnitTests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' | xcpretty
