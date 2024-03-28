@@ -61,7 +61,9 @@ targets:
     sources: [AIDUnitTests] # Директория с исходными файлами тестов
     info:
       path: AID/Application/InfoForTest.plist
-    scheme: {}
+    scheme:
+      - name: "AIDUnitTests"
+      - target: AID
 
   AIDUITests: # Цель для UI-тестов
     type: bundle.ui-testing # Тип для UI-тестов
@@ -72,4 +74,6 @@ targets:
     sources: [AIDUITests] # Директория с исходными файлами UI-тестов
     info:
       path: AID/Application/InfoForTest.plist
-    scheme: {}
+    scheme:
+      - name: "AIDUITests"
+      - target: AID
