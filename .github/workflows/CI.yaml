@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        xcode-version: latest
+        xcode-version: '15.3.0'
 
     - name: Install dependencies
       run: |
