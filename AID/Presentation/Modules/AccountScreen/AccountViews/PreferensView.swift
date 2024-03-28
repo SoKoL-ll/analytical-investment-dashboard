@@ -34,7 +34,7 @@ struct PreferencesSectionView: View {
             Divider()
             
             HStack {
-                Image(systemName: "moon.fill")
+                Image(systemName: "moon")
                     .resizable()
                     .frame(width: 23, height: 23)
                 Text("Theme")

@@ -10,13 +10,13 @@ import SwiftUI
 struct EmailCopyView: View {
     var email: String
     @Binding var showCopiedMessage: Bool
-    
+
     var body: some View {
         HStack {
             Image(systemName: "envelope")
                 .resizable()
                 .frame(width: 23, height: 18)
-            
+
             Button(action: {
                 if let url = URL(string: "mailto:\(email)") {
                     UIApplication.shared.open(url)
@@ -25,9 +25,8 @@ struct EmailCopyView: View {
                 Text("Contact us!")
                     .foregroundColor(.blue)
             }
-            
+
             Spacer()
-            
             Text(email)
                 .padding(8)
                 .background(Color.gray.opacity(0.2))
@@ -36,7 +35,6 @@ struct EmailCopyView: View {
                     RoundedRectangle(cornerRadius: 5)
                         .stroke(Color.gray, lineWidth: 1)
                 )
-            
             Button(action: {
                 UIPasteboard.general.string = email
                 withAnimation {
@@ -49,7 +47,8 @@ struct EmailCopyView: View {
                 }
             }) {
                 Image(systemName: "doc.on.doc")
-                    .foregroundColor(.black)
+                    .foregroundColor(.blue)
+                    .font(.system(size: 22))
             }
         }
         .padding(.vertical, 6)

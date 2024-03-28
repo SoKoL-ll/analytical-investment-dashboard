@@ -12,9 +12,8 @@ import SwiftUI
 struct ProfileView: View {
     @State private var languageIndex: Int = UserDefaults.standard.integer(forKey: "languageIndex")
     @State private var metricIndex: Int = UserDefaults.standard.integer(forKey: "metricIndex")
-    @State private var bubblesIndex: Int = UserDefaults.standard.integer(forKey: "bubblesIndex")
     
-    var languageOptions = ["Русский", "English", "中国人"]
+    var languageOptions = ["Русский", "English"]
     @State private var inputImage: UIImage?
     @State private var showingImagePicker = false
     @State private var showingFavorites = false
@@ -48,13 +47,6 @@ struct ProfileView: View {
                             set: { newValue in
                                 self.metricIndex = newValue
                                 UserDefaults.standard.set(newValue, forKey: "metricIndex")
-                            }
-                        ),
-                        bubblesIndex: Binding(
-                            get: { self.bubblesIndex },
-                            set: { newValue in
-                                self.bubblesIndex = newValue
-                                UserDefaults.standard.set(newValue, forKey: "bubblesIndex")
                             }
                         ),
                         viewModel: stockSettingsViewModel,
