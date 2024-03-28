@@ -9,7 +9,7 @@ import Foundation
 
 struct StockResponse: Decodable {
     let message: String
-    let items: [String: Price]
+    let tickers: [String: Price]
     let postfix: String
     let updatedAt: String
 }

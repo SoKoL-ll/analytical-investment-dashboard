@@ -41,7 +41,7 @@ final class NetworkManager: NetworkManagerDescription {
             .responseDecodable(of: StockResponse.self, decoder: snakeDecoder) { response in
                 switch response.result {
                 case .success(let stocks):
-                    let stockArray: [Stock] = stocks.items.map { key, value in
+                    let stockArray: [Stock] = stocks.tickers.map { key, value in
                         let indicator = Indicator(type: indicatorType, value: value.value, postfix: stocks.postfix)
                         return Stock(ticker: key, indicator: indicator)
                     }
