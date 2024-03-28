@@ -21,9 +21,9 @@ jobs:
 
     - name: Run unit tests
       run: |
-        xcodebuild -project AID.xcodeproj -scheme AIDUnitTests -destination 'platform:iOS Simulator,id:dvtdevice-DVTiOSDeviceSimulatorPlaceholder-iphonesimulator:placeholder,name:Any iOS Simulator Device' test | xcpretty
+        xcodebuild test -scheme AIDUnitTests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' | xcpretty
 
     - name: Run UI tests
       run: |
-        xcodebuild -project AID.xcodeproj -scheme AIDUITests -destination 'platform:iOS Simulator,id:dvtdevice-DVTiOSDeviceSimulatorPlaceholder-iphonesimulator:placeholder,name:Any iOS Simulator Device' test | xcpretty
+        xcodebuild test -scheme AIDUITests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' | xcpretty
 
