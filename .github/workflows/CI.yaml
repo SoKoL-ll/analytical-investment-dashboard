@@ -16,13 +16,6 @@ jobs:
     - name: check Xcode version
       run: /usr/bin/xcodebuild -version
 
-    - name: checkout repository
-      uses: actions/checkout@v3
-
-    - uses: actions/checkout@v3
-      with:
-        xcode-version: '15.2.0'
-
     - name: Install dependencies
       run: |
         brew install xcodegen
@@ -31,15 +24,6 @@ jobs:
       run: |
         make gen
 
-    - name: Prepare iOS 17 simulator
-      run: |
-        sudo mkdir -p /Library/Developer/CoreSimulator/Profiles/Runtimes
-        sudo ln -s /Applications/Xcode_15.2.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime /Library/Developer/CoreSimulator/Profiles/Runtimes/iOS\ 17.0.simruntime
-        xcrun simctl list runtimes
-        xcrun simctl list devices 17.0
-#    -name: Set iOS Version
-#    run: |
-#        xcversion simulators --install='iOS 17.0'
     - name: Run unit tests
       run: |
         xcodebuild test -scheme AIDUnitTests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.0' | xcpretty
