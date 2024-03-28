@@ -13,7 +13,7 @@ jobs:
       run: /usr/bin/xcodebuild -version
 
     - name: Select Xcode 15.0
-      run: sudo xcode-select --switch /Applications/Xcode_15.0.app
+      run: sudo xcode-select -v
 
     - name: checkout repository
       uses: actions/checkout@v3
