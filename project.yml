@@ -4,7 +4,7 @@ name: AID
 packages:
   SnapKit:
     url: https://github.com/SnapKit/SnapKit
-    from: 5.8.0
+    from: 5.7.0
   Alamofire:
     url: https://github.com/Alamofire/Alamofire.git
     from: 5.9.0
