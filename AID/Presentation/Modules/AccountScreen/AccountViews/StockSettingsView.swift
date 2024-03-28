@@ -4,7 +4,7 @@ import SwiftUI
 struct StockSettingsSection: View {
     @Binding var metricIndex: Int
     @Binding var bubblesIndex: Int
-    let metricOptions: [String]
+    @ObservedObject var viewModel: StockSettingsViewModel
     @State private var showingMetricInfo = false
     @Binding var showingFavorites: Bool
 
@@ -15,35 +15,19 @@ struct StockSettingsSection: View {
                 .padding(.top, 10)
             Divider()
             
-            HStack {
-                Image(systemName: "dollarsign.circle")
-                    .resizable()
-                    .frame(width: 23, height: 23)
-                Text("Main Metric")
-                Spacer()
-                Picker("Select", selection: $metricIndex) {
-                    ForEach(0 ..< metricOptions.count, id: \.self) {
-                        Text(self.metricOptions[$0])
-                    }
-                }
-                .pickerStyle(MenuPickerStyle())
-            }
+            if viewModel.isLoading {
+                            disabledPicker(title: "Main Indicator")
+                        } else {
+                            enabledPicker(title: "Main Indicator", selection: $metricIndex, options: viewModel.categories)
+                        }
 
             Divider()
             
-            HStack {
-                Image(systemName: "bubbles.and.sparkles")
-                    .resizable()
-                    .frame(width: 23, height: 23)
-                Text("Bubbles Scale")
-                Spacer()
-                Picker("Select", selection: $bubblesIndex) {
-                    ForEach(0 ..< metricOptions.count, id: \.self) {
-                        Text(self.metricOptions[$0])
-                    }
-                }
-                .pickerStyle(MenuPickerStyle())
-            }
+            if viewModel.isLoading {
+                            disabledPicker(title: "Bubbles Scale")
+                        } else {
+                            enabledPicker(title: "Bubbles Scale", selection: $bubblesIndex, options: viewModel.categories)
+                        }
 
             Divider()
             
@@ -85,6 +69,38 @@ struct StockSettingsSection: View {
         }
         .padding(.horizontal)
     }
+        @ViewBuilder
+        private func disabledPicker(title: String) -> some View {
+            HStack {
+                Image(systemName: "dollarsign.circle")
+                    .resizable()
+                    .frame(width: 23, height: 23)
+                Text(title)
+                Spacer()
+                Picker("", selection: .constant(0)) {
+                    Text("Loading...").tag(0)
+                }
+                .pickerStyle(MenuPickerStyle())
+                .disabled(true)
+            }
+        }
+
+        // Активный пикер с загруженными данными
+        private func enabledPicker(title: String, selection: Binding<Int>, options: [String]) -> some View {
+            HStack {
+                Image(systemName: "dollarsign.circle")
+                    .resizable()
+                    .frame(width: 23, height: 23)
+                Text(title)
+                Spacer()
+                Picker("Select", selection: selection) {
+                    ForEach(0..<options.count, id: \.self) {
+                        Text(options[$0])
+                    }
+                }
+                .pickerStyle(MenuPickerStyle())
+            }
+        }
 }
 
 // Metric Info

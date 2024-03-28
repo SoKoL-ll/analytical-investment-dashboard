@@ -7,6 +7,7 @@ struct PreferencesSectionView: View {
     @State private var showingShareSheet = false
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject var themeManager = ThemeManager.shared
+    @State private var showCopiedMessage: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -50,13 +51,7 @@ struct PreferencesSectionView: View {
             
             Divider()
             
-            HStack {
-                Image(systemName: "envelope")
-                    .resizable()
-                    .frame(width: 23, height: 18)
-                Link("Contact us", destination: URL(string: "mailto:dreamteam@gmail.com")!)
-            }
-            .padding(.vertical, 6)
+            EmailCopyView(email: "dreamteam@gmail.com", showCopiedMessage: $showCopiedMessage)
             
             Divider()
             
@@ -79,7 +74,6 @@ struct PreferencesSectionView: View {
         .padding(.horizontal)
     }
 }
-
 struct ActivityView: UIViewControllerRepresentable {
     var activityItems: [Any]
     var applicationActivities: [UIActivity]?

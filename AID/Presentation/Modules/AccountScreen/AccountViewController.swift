@@ -57,7 +57,7 @@ struct ProfileView: View {
                                 UserDefaults.standard.set(newValue, forKey: "bubblesIndex")
                             }
                         ),
-                        metricOptions: stockSettingsViewModel.categories,
+                        viewModel: stockSettingsViewModel,
                         showingFavorites: $showingFavorites
                     )
                     

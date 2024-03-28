@@ -11,15 +11,18 @@ import SwiftUI
 class ThemeManager: ObservableObject {
     static let shared = ThemeManager()
     
-    @Published var selectedThemeIndex: Int = 0 {
+    @Published var selectedThemeIndex: Int = UserDefaults.standard.integer(forKey: "selectedThemeIndex") {
         didSet {
+            UserDefaults.standard.set(selectedThemeIndex, forKey: "selectedThemeIndex")
             applyTheme()
         }
     }
     
-    private init() { }
+    private init() {
+        applyTheme()
+    }
     
-    private func applyTheme() {
+    func applyTheme() {
         DispatchQueue.main.async {
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
                 return
