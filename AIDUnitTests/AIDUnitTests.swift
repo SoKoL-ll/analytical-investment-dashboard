@@ -83,6 +83,8 @@ final class FavouritesScreenPresenterTests: XCTestCase {
 
         XCTAssertTrue(presenter.companyInFavourites(companyName: "Company1"))
         XCTAssertFalse(presenter.companyInFavourites(companyName: "Company3"))
+
+        UserDefaults.standard.set([], forKey: "favourites")
     }
 
     func testDeleteFromFavourites() {
@@ -90,6 +92,8 @@ final class FavouritesScreenPresenterTests: XCTestCase {
 
         presenter.deleteFromFavourites(companyName: "Company1")
         XCTAssertFalse(presenter.companyInFavourites(companyName: "Company1"))
+
+        UserDefaults.standard.set([], forKey: "favourites")
     }
 
     func testLaunchData() {
@@ -98,6 +102,8 @@ final class FavouritesScreenPresenterTests: XCTestCase {
 
         presenter.launchData()
         XCTAssertEqual(mockView.companiesSet, companies)
+
+        UserDefaults.standard.set([], forKey: "favourites")
     }
 }
 

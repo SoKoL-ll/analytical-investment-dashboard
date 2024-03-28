@@ -40,10 +40,6 @@ final class AIDUITests: XCTestCase {
 
         XCTAssertTrue(app.activityIndicators.element.exists)
 
-//        accountTab.tap()
-//        XCTAssertTrue(app.staticTexts["YourAccountLabelIdentifier"].waitForExistence(timeout: 5))
-//        XCTAssertTrue(app.staticTexts["YourAccountLabelIdentifier"].exists)
-
         favouritesTab.tap()
         XCTAssertTrue(app.scrollViews.element.waitForExistence(timeout: 5))
         XCTAssertTrue(app.scrollViews.element.exists)
