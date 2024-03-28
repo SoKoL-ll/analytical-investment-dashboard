@@ -9,6 +9,12 @@ jobs:
   build:
     runs-on: macOS-latest
     steps:
+    - name: check Xcode version
+      run: /usr/bin/xcodebuild -version
+
+    - name: checkout repository
+      uses: actions/checkout@v3
+
     - uses: actions/checkout@v3
       with:
         xcode-version: '15.2.0'
