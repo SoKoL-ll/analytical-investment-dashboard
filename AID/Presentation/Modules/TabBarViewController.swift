@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import SwiftUI
 
 final class TabBarViewController: UITabBarController {
 
@@ -14,6 +15,7 @@ final class TabBarViewController: UITabBarController {
     private func setupTabs() {
         let mainViewController = MainViewController()
         let mainViewPresenter = MainScreenPresenter(view: mainViewController)
+        let profileView = UIHostingController(rootView: ProfileView())
 
         mainViewController.presenter = mainViewPresenter
 
@@ -25,7 +27,7 @@ final class TabBarViewController: UITabBarController {
         let account = self.createNavigation(
             with: Texts.tabBarAccount,
             and: UIImage(systemName: "person.fill"),
-            vc: AccountViewController()
+            vc: profileView
         )
         let main = self.createNavigation(
             with: Texts.tabBarMain,

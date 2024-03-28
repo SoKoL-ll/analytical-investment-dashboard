@@ -17,6 +17,7 @@ final class CoordinatorImpl: Coordinator {
 
     func start(in window: UIWindow?) {
         self.window = window
+        ThemeManager.shared.applyTheme()
         openMain()
     }
 
