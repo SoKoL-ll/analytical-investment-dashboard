@@ -105,7 +105,7 @@ extension BubbleView: UIContextMenuInteractionDelegate {
                 return nil
             }
 
-            if delegate?.didCopmanyInFavourites(companyName: self.labelOfName.text ?? "") ?? false {
+            if self.delegate?.didCopmanyInFavourites(companyName: self.labelOfName.text ?? "") ?? false {
                 return UIMenu(title: "", children: [
                     UIAction(title: Texts.removeFromFavourites, image: UIImage(systemName: "star"), handler: { [weak self] _ in
                         guard let self = self else {

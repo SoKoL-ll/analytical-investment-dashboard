@@ -19,8 +19,9 @@ struct Provider: TimelineProvider {
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<StockInfoEntry>) -> Void) {
-        var firstFavorite = UserDefaults.standard.stringArray(forKey: Constants.UserDefaultsKeys.favourites.rawValue)?.first ?? Constants.Default.ticker
-        var indicator = UserDefaults.standard.stringArray(forKey: Constants.UserDefaultsKeys.indicator.rawValue)?.first ?? Constants.Default.indicator
+        let userDefaults = UserDefaults.standard
+        var firstFavorite = userDefaults.stringArray(forKey: Constants.UserDefaultsKeys.favourites.rawValue)?.randomElement() ?? Constants.Default.ticker
+        var indicator = userDefaults.string(forKey: Constants.UserDefaultsKeys.indicator.rawValue) ?? Constants.Default.indicator
         getStock(firstFavorite, with: indicator) { result in
             var policy: TimelineReloadPolicy = .never
             if let nextDate = Calendar.current.date(byAdding: .minute, value: Constants.Default.updateOffset, to: Date()) {

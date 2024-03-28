@@ -10,6 +10,7 @@
 # Xcode project files
 AID.xcodeproj
 AID/Application/Info.plist
+AID/Application/InfoForTest.plist
 StockInfo/Info.plist
 
 # Icon must end with two \r

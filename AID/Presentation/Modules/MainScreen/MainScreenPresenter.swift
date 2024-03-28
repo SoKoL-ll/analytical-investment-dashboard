@@ -42,24 +42,23 @@ class MainScreenPresenter: MainScreenPresenterProtocol {
     }
     
     func launchData() {
-//        NetworkManager.shared.getStocks(with: "profitability") { [weak self] result in
-//            guard let self = self else {
-//                return
-//            }
-//        
-//            switch result {
-//            case .success(let stocks):
-//                let stocks = stocks.1
-//                let companies = stocks.map { $0.ticker }
-//                self.view?.setContent(companies: Array(companies.prefix(11)))
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
+        NetworkManager.shared.getStocks(with: "profitability") { [weak self] result in
+            guard let self = self else {
+                return
+            }
+        
+            switch result {
+            case .success(let stocks):
+                let companies = stocks.0.map { $0.ticker }
+                self.view?.setContent(companies: Array(companies.prefix(11)))
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
 
     // Вызывается при нажатии на какую-либо компанию
     func openInfoAboutCompany(companyName: String) {
-        print("\(companyName) did taped")
+        view?.pushCompanyDetailsViewController(companyName: companyName)
     }
 }
