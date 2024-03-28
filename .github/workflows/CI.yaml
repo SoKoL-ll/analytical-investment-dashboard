@@ -9,12 +9,11 @@ jobs:
   build:
     runs-on: macOS-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: Show the currently detailed version of Xcode for CLI
+      run: xcode-select -p
 
-    - name: Set up Xcode
-      run: |
-        sudo xcode-select --switch /Applications/Xcode_15.3.app # Указание пути к Xcode
-        sudo xcodebuild -runFirstLaunch # Запуск Xcode для инициализации
+    - name: Select Xcode 15.3
+      run: sudo xcode-select -s /Applications/Xcode_15.3.app && xcodebuild -version
 
     - name: Install dependencies
       run: |
