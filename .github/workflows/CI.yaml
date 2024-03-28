@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macOS-13
+    runs-on: macOS-14
     steps:
 
     - name: Select Xcode 15.2
