@@ -26,6 +26,19 @@ targets:
       - package: Alamofire
         product: Alamofire
     sources: [StockInfo]
+    info:
+      path: StockInfo/Info.plist
+      properties:
+        CFBundleExecutable: StockInfo
+        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
+        CFBundleName: StockInfo
+        NSAppTransportSecurity:
+          NSExceptionDomains:
+            ai-dashboard.site:
+              NSIncludesSubdomains: true
+              NSExceptionAllowsInsecureHTTPLoads: true
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
   AID:
     type: application
     platform: iOS
