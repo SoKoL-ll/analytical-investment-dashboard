@@ -12,6 +12,33 @@ options:
   bundleIdPrefix: com
 # Список целей (таргетов)
 targets:
+  StockInfo:
+    type: app-extension
+    platform: iOS
+    settings:
+      INFOPLIST_FILE: StockInfo/Info.plist
+      PROVISIONING_PROFILE_SPECIFIER_Release: Development - Widget Extension
+      OTHER_LDFLAGS: $(inherited) -framework WidgetKit
+      PRODUCT_BUNDLE_IDENTIFIER: com.AID.StockInfo
+    dependencies:
+      - package: SnapKit
+        product: SnapKit
+      - package: Alamofire
+        product: Alamofire
+    sources: [StockInfo]
+    info:
+      path: StockInfo/Info.plist
+      properties:
+        CFBundleExecutable: StockInfo
+        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
+        CFBundleName: StockInfo
+        NSAppTransportSecurity:
+          NSExceptionDomains:
+            ai-dashboard.site:
+              NSIncludesSubdomains: true
+              NSExceptionAllowsInsecureHTTPLoads: true
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
   AID:
     type: application
     platform: iOS
@@ -21,6 +48,7 @@ targets:
         product: SnapKit
       - package: Alamofire
         product: Alamofire
+      - target: StockInfo
     sources: [AID]
     postCompileScripts:
       - script: |

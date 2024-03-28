@@ -38,9 +38,11 @@ final class TabBarViewController: UITabBarController {
             vc: favouritesViewController
         )
 
-        tabBar.backgroundColor = .background
-        tabBar.isTranslucent = false
-        tabBar.barTintColor = .background
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.backgroundColor = .background
+        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        UITabBar.appearance().standardAppearance = tabBarAppearance
 
         self.setViewControllers([account, main, favourites], animated: true)
         self.selectedViewController = self.viewControllers?[1]
