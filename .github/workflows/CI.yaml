@@ -30,8 +30,8 @@ jobs:
 
     - name: Run unit tests
       run: |
-        xcodebuild test -scheme AIDUnitTests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.0' | xcpretty
+        xcodebuild test -scheme AIDUnitTests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.0.1' | xcpretty
 
     - name: Run UI tests
       run: |
-        xcodebuild test -scheme AIDUITests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.0' | xcpretty
+        xcodebuild test -scheme AIDUITests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.0.1' | xcpretty
