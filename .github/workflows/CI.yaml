@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macOS-14
+    steps:
+
+    - name: Select Xcode 15.2
+      run: sudo xcode-select --switch /Applications/Xcode.app
+
+    - name: check Xcode version
+      run: /usr/bin/xcodebuild -version
+
+    - uses: actions/checkout@v3
+      with:
+        xcode-version: '15.2.0'
+
+    - name: Install dependencies
+      run: |
+        brew install xcodegen
+
+    - name: Generate Xcode project
+      run: |
+        make gen
+
+    - name: Run unit tests
+      run: |
+        xcodebuild test -scheme AIDUnitTests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.0.1' | xcpretty
+
+    - name: Run UI tests
+      run: |
+        xcodebuild test -scheme AIDUITests -project AID.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.0.1' | xcpretty
