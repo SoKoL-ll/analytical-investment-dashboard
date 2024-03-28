@@ -10,12 +10,9 @@ jobs:
     runs-on: macOS-latest
     steps:
     - uses: actions/checkout@v3
-
-    - name: Set up Xcode
-      run: |
-        sudo xcode-select --switch /Applications/Xcode_14.2.app # Указание пути к Xcode
-        sudo xcodebuild -runFirstLaunch # Запуск Xcode для инициализации
-
+      with:
+        xcode-version: latest
+        
     - name: Install dependencies
       run: |
         brew install xcodegen
