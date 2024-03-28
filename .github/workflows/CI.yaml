@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macOS-latest
+    runs-on: macOS-13
     steps:
 
     - name: Select Xcode 15.2
@@ -15,7 +15,7 @@ jobs:
 
     - name: check Xcode version
       run: /usr/bin/xcodebuild -version
-      
+
     - name: checkout repository
       uses: actions/checkout@v3
 
