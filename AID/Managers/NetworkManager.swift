@@ -67,6 +67,7 @@ final class NetworkManager: NetworkManagerDescription {
                         return Indicator(type: key,
                                          value: value.value,
                                          postfix: value.postfix,
+                                         name: value.name,
                                          description: value.description,
                                          shouldBuy: value.shouldBuy)
                     }
