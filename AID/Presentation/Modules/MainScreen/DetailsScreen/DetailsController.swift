@@ -85,16 +85,16 @@ final class DetailsController: ObservableObject {
     // returns system name of verdict image and color for that image
     static func getVerdictViewInformation(_ verdict: Double?) -> IndicatorVerdictInfo {
         guard let verdict else {
-            return .init(color: .secondary, symbolSystemName: nil, description: "Недостаточно данных")
+            return .init(color: .secondary, symbolSystemName: nil, description: String(localized: "Not enough data"))
         }
         
         if verdict < -Constants.neutralVerdictThreshold {
-            return .init(color: Color(.red), symbolSystemName: "minus", description: "Стоит продавать")
+            return .init(color: Color(.red), symbolSystemName: "minus", description: String(localized: "Should sell"))
         } else if verdict > Constants.neutralVerdictThreshold {
-            return .init(color: Color(.green), symbolSystemName: "plus", description: "Стоит покупать")
+            return .init(color: Color(.green), symbolSystemName: "plus", description: String(localized: "Should buy"))
         }
         
-        return .init(color: .secondary, symbolSystemName: "equal", description: "Нейтрально")
+        return .init(color: .secondary, symbolSystemName: "equal", description: String(localized: "Neutral"))
     }
     
     func loadFavouriteState() {

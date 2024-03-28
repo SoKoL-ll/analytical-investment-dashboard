@@ -65,8 +65,8 @@ final class TabBarViewController: UITabBarController {
 
 private extension TabBarViewController {
     struct Texts {
-        static let tabBarMain = "Главная"
-        static let tabBarAccount = "Общее"
-        static let tabBarFavourite = "Избранное"
+        static let tabBarMain = String(localized: "Main")
+        static let tabBarAccount = String(localized: "Profile")
+        static let tabBarFavourite = String(localized: "Favorite")
     }
 }
