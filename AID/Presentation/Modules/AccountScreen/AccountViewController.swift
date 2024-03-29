@@ -10,6 +10,8 @@ import UIKit
 import SwiftUI
 
 struct ProfileView: View {
+    @Environment(\.colorScheme) private var scheme
+    
     @State private var languageIndex: Int = UserDefaults.standard.integer(forKey: "languageIndex")
     @State private var metricIndex: Int = UserDefaults.standard.integer(forKey: "metricIndex")
     
@@ -21,6 +23,13 @@ struct ProfileView: View {
     @State private var userName: String = UserDefaults.standard.string(forKey: "userName") ?? ""
     
     @StateObject private var stockSettingsViewModel = StockSettingsViewModel()
+    
+    var navbarColor: Color {
+        Color(
+            UIColor(named: "Background")?
+                .resolvedColor(with: .init(userInterfaceStyle: scheme == .dark ? .dark : .light)) ?? .white
+        )
+    }
     
     var body: some View {
         NavigationView {
@@ -58,6 +67,7 @@ struct ProfileView: View {
             }
             .background(Color("Background").edgesIgnoringSafeArea(.all))
             .navigationBarTitle("Настройки")
+            .toolbarBackground(navbarColor, for: .navigationBar)
             .onAppear {
                 if stockSettingsViewModel.categories.isEmpty {
                     stockSettingsViewModel.loadCategories()
