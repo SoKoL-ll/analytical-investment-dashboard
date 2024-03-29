@@ -11,7 +11,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @State private var languageIndex: Int = UserDefaults.standard.integer(forKey: "languageIndex")
-    @State private var metricIndex: Int = UserDefaults.standard.integer(forKey: "metricIndex")
+    @State private var metricIndex: String = UserDefaults.standard.string(forKey: "metricIndex") ?? "profitability"
     
     var languageOptions = ["Русский", "English"]
     @State private var inputImage: UIImage?
@@ -51,7 +51,12 @@ struct ProfileView: View {
                         ),
                         viewModel: stockSettingsViewModel,
                         showingFavorites: $showingFavorites
-                    )
+                    ).onAppear {
+                        if metricIndex.isEmpty, let firstCategory = stockSettingsViewModel.categories.first {
+                            metricIndex = firstCategory
+                            UserDefaults.standard.set(firstCategory, forKey: "metricIndex")
+                        }
+                    }
                     
                     PreferencesSectionView(languageIndex: $languageIndex, languageOptions: languageOptions)
                 }

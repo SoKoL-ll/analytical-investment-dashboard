@@ -159,7 +159,18 @@
         }
       }
     },
+    "Favorites" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Избранное"
+          }
+        }
+      }
+    },
     "Favourite" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ru" : {
           "stringUnit" : {
@@ -240,6 +251,27 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Главный индикатор"
+          }
+        }
+      }
+    },
+    "Main Indicator" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Главный индикатор"
+          }
+        }
+      }
+    },
+    "Metrics Info" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Информация об индикаторах"
           }
         }
       }
@@ -353,6 +385,7 @@
       }
     },
     "Stock info" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ru" : {
           "stringUnit" : {
