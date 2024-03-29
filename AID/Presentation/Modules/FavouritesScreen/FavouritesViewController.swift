@@ -10,9 +10,8 @@ import UIKit
 import SwiftUI
 
 protocol FavouritesViewControllerProtocol: AnyObject {
-    func setContent(companies: [String])
-    
     func pushCompanyDetailsViewController(companyName: String)
+    func setContent(pageInfo: PageInfo)
 }
 
 class FavouritesViewController: UIViewController {
@@ -38,8 +37,12 @@ class FavouritesViewController: UIViewController {
 }
 
 extension FavouritesViewController: FavouritesViewControllerProtocol {
-    func setContent(companies: [String]) {
-        let scrollView = PageViewBlank(companies: companies, isScrollViewEnable: true, delegate: self) { [weak self] companyName in
+    func setContent(pageInfo: PageInfo) {
+        let scrollView = PageViewBlank(
+            pageInfo: pageInfo,
+            isScrollViewEnable: true,
+            delegate: self
+        ) { [weak self] companyName in
             guard let self = self else {
                 return
             }

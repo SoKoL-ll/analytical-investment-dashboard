@@ -57,7 +57,7 @@ struct ProfileView: View {
                 }
             }
             .background(Color("Background").edgesIgnoringSafeArea(.all))
-            .navigationBarTitle("Settings")
+            .navigationBarTitle("Настройки")
             .onAppear {
                 if stockSettingsViewModel.categories.isEmpty {
                     stockSettingsViewModel.loadCategories()

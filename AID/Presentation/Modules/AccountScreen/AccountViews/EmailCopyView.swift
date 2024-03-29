@@ -22,7 +22,7 @@ struct EmailCopyView: View {
                     UIApplication.shared.open(url)
                 }
             }) {
-                Text("Contact us!")
+                Text("Связаться с нами!")
                     .foregroundColor(.blue)
             }
 
@@ -48,7 +48,7 @@ struct EmailCopyView: View {
             }) {
                 Image(systemName: "doc.on.doc")
                     .foregroundColor(.blue)
-                    .font(.system(size: 22))
+                    .font(.system(size: 20))
             }
         }
         .padding(.vertical, 6)
