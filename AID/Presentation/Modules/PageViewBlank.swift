@@ -10,7 +10,7 @@ import UIKit
 
 class PageViewBlank: UIScrollView {
 
-    private var companies: [String]
+    private var pageInfo: PageInfo
     private let bubbleDidTap: (String) -> Void
     private var isScrollViewEnable: Bool
     weak var viewDelegate: ViewControllerDelegateFavourites?
@@ -30,19 +30,33 @@ class PageViewBlank: UIScrollView {
         }
     }
 
-    // Просто для примера, потом текст будет верный
     private lazy var companiesTypeLabel: UILabel = {
         let label = UILabel()
 
-        label.text = "BANK"
+        label.text = self.pageInfo.shortName
+        label.numberOfLines = 2
         label.font = .boldSystemFont(ofSize: Constants.fontSizeLabelCompanyType)
 
         return label
     }()
 
-    init(companies: [String], isScrollViewEnable: Bool, delegate: ViewControllerDelegateFavourites, bubbleDidTap: @escaping (String) -> Void) {
+    private lazy var fullDescriptionCompanyType: UILabel = {
+        let label = UILabel()
+
+        label.text = self.pageInfo.fullName
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.lineBreakMode = .byWordWrapping
+        label.sizeToFit()
+        label.alpha = 0.5
+        label.font = .boldSystemFont(ofSize: Constants.fontSizeLabelCompanyTypeFullDescription)
+
+        return label
+    }()
+
+    init(pageInfo: PageInfo, isScrollViewEnable: Bool, delegate: ViewControllerDelegateFavourites, bubbleDidTap: @escaping (String) -> Void) {
         self.viewDelegate = delegate
-        self.companies = companies
+        self.pageInfo = pageInfo
         self.bubbleDidTap = bubbleDidTap
         self.bubbles = []
         self.isScrollViewEnable = isScrollViewEnable
@@ -115,8 +129,10 @@ class PageViewBlank: UIScrollView {
     // Создаем и конфигурируем наши круги
     func setupBubbles() {
         self.bubbles = BubbleViewFactory.make(
-            companies: companies,
+            tickers: pageInfo.tickers,
+            metricType: pageInfo.metricType,
             delegate: viewDelegate,
+            isScrollEnabled: self.isScrollViewEnable,
             bubbleDidTap: bubbleDidTap
         )
     }
@@ -128,7 +144,16 @@ class PageViewBlank: UIScrollView {
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().inset(Constants.mediumMargin)
         }
+
+        self.addSubview(fullDescriptionCompanyType)
+
+        fullDescriptionCompanyType.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(companiesTypeLabel.snp.bottom).inset(-Constants.smallMargin)
+            make.leading.trailing.equalToSuperview().inset(Constants.bigMargin)
+        }
     }
+
     // Добавляем все объекты, связанные с анимацией в основной класс
     private func setupBehaviors() {
         animator.addBehavior(collision)

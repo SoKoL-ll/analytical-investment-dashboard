@@ -19,4 +19,6 @@ public enum Constants {
     static let defaultBubbleSize: CGFloat = 55
     static let tabBarMargin: CGFloat = 90
     static let fontSizeLabelCompanyType: CGFloat = 24
+    static let fontSizeLabelCompanyTypeFullDescription: CGFloat = 12
+    static let constantForWeightFavourites: Double = -1e9
 }

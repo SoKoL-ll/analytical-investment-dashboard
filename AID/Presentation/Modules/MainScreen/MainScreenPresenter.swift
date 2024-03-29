@@ -42,15 +42,47 @@ class MainScreenPresenter: MainScreenPresenterProtocol {
     }
     
     func launchData() {
-        NetworkManager.shared.getStocks(with: "profitability") { [weak self] result in
+
+        let indexInfoType = UserDefaults.standard.integer(forKey: "metricIndex")
+
+        var infoType = "profitability"
+
+        NetworkManager.shared.getCategories { result in
+            switch result {
+            case .success(let categories):
+                infoType = categories[indexInfoType]
+            case .failure(let error):
+                print(error)
+            }
+        }
+
+        NetworkManager.shared.getStocks(with: infoType) { [weak self] result in
             guard let self = self else {
                 return
             }
         
             switch result {
             case .success(let stocks):
-                let companies = stocks.0.map { $0.ticker }
-                self.view?.setContent(companies: Array(companies.prefix(11)))
+                var resultInfo = [PageInfo]()
+                for index in stocks.1 {
+                    let tickers = index.tickers
+                    var tickersForResult = [String: (Double, Double)]()
+
+                    for ticker in tickers {
+                        for stock in stocks.0 where stock.ticker == ticker.key {
+                            tickersForResult[ticker.key] = (ticker.value, stock.indicator.value ?? 0)
+                        }
+                    }
+                    
+                    resultInfo.append(PageInfo(
+                        shortName: index.shortName,
+                        fullName: index.fullName,
+                        metricType: infoType,
+                        tickers: tickersForResult
+                    ))
+                }
+
+                self.view?.setContent(pagesInfo: resultInfo)
             case .failure(let error):
                 print(error)
             }

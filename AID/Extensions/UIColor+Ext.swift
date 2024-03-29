@@ -39,6 +39,13 @@ extension UIColor {
         return color
     }()
     
+    static let neutral: UIColor = {
+        guard let color = UIColor(named: "NeutralBubble") else {
+            fatalError("Can't find color: Green")
+        }
+        return color
+    }()
+
     static let negative: UIColor = {
         guard let color = UIColor(named: "Red") else {
             fatalError("Can't find color: Red")

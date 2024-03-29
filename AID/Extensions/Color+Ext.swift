@@ -13,4 +13,5 @@ extension Color {
     static let positive = Color("Green")
     static let negative = Color("Red")
     static let backGroundPage = Color("BackgroundPage")
+    static let neutral = Color("NeutralBubble")
 }
