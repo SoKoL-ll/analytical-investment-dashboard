@@ -18,11 +18,11 @@ struct UserProfileSection: View {
                     onPhotoTap()
                 }
             
-            Button("Set New Photo", action: onPhotoTap)
+            Button(String(localized: "Set New Photo"), action: onPhotoTap)
                 .foregroundColor(.blue)
                 .padding(.bottom, 10)
             
-            TextField("Enter your name here!", text: $userName)
+            TextField(String(localized: "Enter your name here!"), text: $userName)
                 .foregroundColor(.primary)
                 .font(.system(size: 22))
                 .multilineTextAlignment(.center)

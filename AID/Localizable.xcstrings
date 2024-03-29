@@ -90,7 +90,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Связаться с нами"
+            "value" : "Пиши нам!"
           }
         }
       }
@@ -122,6 +122,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Описание"
+          }
+        }
+      }
+    },
+    "Enter your name here!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введите своё имя здесь!"
           }
         }
       }
@@ -222,6 +233,17 @@
         }
       }
     },
+    "Main indicator" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Главный индикатор"
+          }
+        }
+      }
+    },
     "Neutral" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -283,6 +305,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Профиль"
+          }
+        }
+      }
+    },
+    "Set New Photo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установи новую картинку"
           }
         }
       }
