@@ -11,7 +11,7 @@ struct PreferencesSectionView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("ПЕРСОНАЛЬНЫЕ НАСТРОЙКИ")
+            Text("PERSONAL PREFERENCES")
                 .font(.headline)
                 .padding(.top, 20)
             
@@ -21,7 +21,7 @@ struct PreferencesSectionView: View {
                 Image(systemName: "globe")
                     .resizable()
                     .frame(width: 23, height: 23)
-                Text("Язык")
+                Text("Language")
                 Spacer()
                 Picker("Select", selection: $languageIndex) {
                     ForEach(0 ..< languageOptions.count, id: \.self) {
@@ -37,13 +37,13 @@ struct PreferencesSectionView: View {
                 Image(systemName: "moon")
                     .resizable()
                     .frame(width: 23, height: 23)
-                Text("Тема")
+                Text("Theme")
                     .frame(width: 70, alignment: .leading)
                 Spacer()
                 Picker("Theme", selection: $themeManager.selectedThemeIndex) {
-                    Text("Системная").tag(0)
-                    Text("Светлая").tag(1)
-                    Text("Темная").tag(2)
+                    Text("System").tag(0)
+                    Text("Light").tag(1)
+                    Text("Dark").tag(2)
                 }
                 .frame(width: 250)
                 .pickerStyle(SegmentedPickerStyle())
@@ -61,7 +61,7 @@ struct PreferencesSectionView: View {
                     .resizable()
                     .frame(width: 21, height: 29)
                     .padding(.leading, 2)
-                Button("Поделиться") {
+                Button("Share") {
                     showingShareSheet = true
                 }
                 .sheet(isPresented: $showingShareSheet) {

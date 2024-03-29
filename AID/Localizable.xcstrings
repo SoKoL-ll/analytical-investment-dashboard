@@ -2,7 +2,14 @@
   "sourceLanguage" : "en",
   "strings" : {
     "- %@" : {
-
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "- %@"
+          }
+        }
+      }
     },
     "- %lld" : {
       "extractionState" : "stale",
@@ -16,7 +23,14 @@
       }
     },
     "+ %@" : {
-
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+ %@"
+          }
+        }
+      }
     },
     "+ %lld" : {
       "extractionState" : "stale",
@@ -30,7 +44,14 @@
       }
     },
     "₽" : {
-
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "₽"
+          }
+        }
+      }
     },
     "Add to favourites" : {
       "extractionState" : "stale",
@@ -64,6 +85,16 @@
         }
       }
     },
+    "Contact us!" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Связаться с нами"
+          }
+        }
+      }
+    },
     "D" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -71,6 +102,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Д"
+          }
+        }
+      }
+    },
+    "Dark" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Темная"
           }
         }
       }
@@ -107,6 +148,16 @@
         }
       }
     },
+    "Favourite" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Избранное"
+          }
+        }
+      }
+    },
     "H" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -114,6 +165,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ч"
+          }
+        }
+      }
+    },
+    "Language" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Язык"
+          }
+        }
+      }
+    },
+    "Light" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Светлая"
+          }
+        }
+      }
+    },
+    "Loading..." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузка..."
           }
         }
       }
@@ -184,6 +265,16 @@
         }
       }
     },
+    "PERSONAL PREFERENCES" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ЛИЧНЫЕ НАСТРОЙКИ"
+          }
+        }
+      }
+    },
     "Profile" : {
       "comment" : "tabbar",
       "extractionState" : "manual",
@@ -228,12 +319,52 @@
         }
       }
     },
+    "Stock info" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Информация об акции"
+          }
+        }
+      }
+    },
     "Stock price" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Цена акции"
+          }
+        }
+      }
+    },
+    "STOCK SETTINGS" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки акции"
+          }
+        }
+      }
+    },
+    "System" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Системная"
+          }
+        }
+      }
+    },
+    "Theme" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тема"
           }
         }
       }

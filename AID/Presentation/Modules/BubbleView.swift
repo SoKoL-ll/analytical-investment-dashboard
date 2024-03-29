@@ -169,7 +169,7 @@ private extension BubbleView {
     }
 
     struct Texts {
-        static let removeFromFavourites = "Удалить из избранного"
-        static let addToFavourites = "Добавить в избранное"
+        static let removeFromFavourites = String(localized: "Delete from favourite")
+        static let addToFavourites = String(localized: "Add to favourite")
     }
 }

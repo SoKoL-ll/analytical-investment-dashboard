@@ -10,16 +10,16 @@ struct StockSettingsSection: View {
 
     var body: some View {
             VStack(alignment: .leading, spacing: 10) {
-                Text("НАСТРОЙКИ АКЦИЙ")
+                Text("STOCK SETTINGS")
                     .font(.headline)
                     .padding(.top, 10)
                 Divider()
                 
                 // Picker for Main Indicator
                 if viewModel.isLoading {
-                    disabledPicker(title: "Основной показатель")
+                    disabledPicker(title: String(localized: "Main indicator"))
                 } else {
-                    enabledPicker(title: "Основной показатель", selection: $metricIndex, options: viewModel.categories)
+                    enabledPicker(title: String(localized: "Main indicator"), selection: $metricIndex, options: viewModel.categories)
                 }
 
                 Divider()
@@ -29,7 +29,7 @@ struct StockSettingsSection: View {
                     Image(systemName: "info.circle")
                         .resizable()
                         .frame(width: 23, height: 23)
-                    Text("Информация о показателях")
+                    Text("Stock info")
                     Spacer()
                     Image(systemName: "chevron.right")
                 }
@@ -48,7 +48,7 @@ struct StockSettingsSection: View {
                     Image(systemName: "star")
                         .resizable()
                         .frame(width: 23, height: 23)
-                    Text("Избранное")
+                    Text("Favourite")
                     Spacer()
                     Image(systemName: "chevron.right")
                 }
