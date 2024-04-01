@@ -50,7 +50,7 @@ struct DetailsView: View {
         .navigationTitle(detailsController.ticker)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Add to favourites", systemImage: detailsController.isFavourite ? "star.fill" : "star") {
+                Button(String(localized: "Add to favourites"), systemImage: detailsController.isFavourite ? "star.fill" : "star") {
                     detailsController.switchFavouriteState()
                 }
             }
