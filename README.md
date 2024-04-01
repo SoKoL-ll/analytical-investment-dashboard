@@ -13,7 +13,7 @@
 
 <h2> Команда </h2>
 
-> iOS разработчик - [Соколов Александр](https://github.com/MX126)
+> iOS разработчик - [Соколов Александр](https://github.com/SoKoL-ll)
  
 > iOS разработчик - [Симаков Михаил](https://github.com/MishkaSimakov)
  
