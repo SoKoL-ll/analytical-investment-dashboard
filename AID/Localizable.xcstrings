@@ -352,6 +352,17 @@
         }
       }
     },
+    "Settings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки"
+          }
+        }
+      }
+    },
     "Should buy" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -410,7 +421,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Настройки акции"
+            "value" : "НАСТРОЙКИ АКЦИЙ"
           }
         }
       }

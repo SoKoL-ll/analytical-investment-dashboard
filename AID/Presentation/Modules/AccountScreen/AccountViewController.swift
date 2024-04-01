@@ -62,7 +62,7 @@ struct ProfileView: View {
                 }
             }
             .background(Color("Background").edgesIgnoringSafeArea(.all))
-            .navigationBarTitle("Настройки")
+            .navigationBarTitle(String(localized: "Settings"))
             .onAppear {
                 if stockSettingsViewModel.categories.isEmpty {
                     stockSettingsViewModel.loadCategories()
