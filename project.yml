@@ -9,29 +9,23 @@ packages:
     url: https://github.com/Alamofire/Alamofire.git
     from: 5.9.0
 options:
-  bundleIdPrefix: com
+  bundleIdPrefix: ru
 # Список целей (таргетов)
 targets:
   StockInfo:
     type: app-extension
     platform: iOS
+    deploymentTarget: "17.0"
     settings:
-      INFOPLIST_FILE: StockInfo/Info.plist
-      PROVISIONING_PROFILE_SPECIFIER_Release: Development - Widget Extension
-      OTHER_LDFLAGS: $(inherited) -framework WidgetKit
-      PRODUCT_BUNDLE_IDENTIFIER: com.AID.StockInfo
+      PRODUCT_BUNDLE_IDENTIFIER: ru.AID.StockInfo
     dependencies:
-      - package: SnapKit
-        product: SnapKit
       - package: Alamofire
         product: Alamofire
     sources: [StockInfo]
     info:
       path: StockInfo/Info.plist
       properties:
-        CFBundleExecutable: StockInfo
         CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
-        CFBundleName: StockInfo
         NSAppTransportSecurity:
           NSExceptionDomains:
             ai-dashboard.site:

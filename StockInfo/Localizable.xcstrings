@@ -1,0 +1,65 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ " : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
+    },
+    "%@%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@%2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@%2$@"
+          }
+        }
+      }
+    },
+    "Some information about your favorite stock." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Краткая информация по акции из избранных"
+          }
+        }
+      }
+    },
+    "Stock Info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Инфо по акции"
+          }
+        }
+      }
+    },
+    "Stock info Widget" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Инфо виджет по акции"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

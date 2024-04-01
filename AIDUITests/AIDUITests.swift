@@ -29,9 +29,9 @@ final class AIDUITests: XCTestCase {
         XCTAssertTrue(tabBar.exists)
 
         // Access tab bar items
-        let mainTab = tabBar.buttons["Главная"]
-        let accountTab = tabBar.buttons["Общее"]
-        let favouritesTab = tabBar.buttons["Избранное"]
+        let mainTab = tabBar.buttons[String(localized: "Main")]
+        let accountTab = tabBar.buttons[String(localized: "Profile")]
+        let favouritesTab = tabBar.buttons[String(localized: "Favourite")]
 
         // Validate tab bar items
         XCTAssertTrue(mainTab.exists)

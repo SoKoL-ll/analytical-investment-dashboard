@@ -10,8 +10,7 @@ import SwiftUI
 import SnapKit
 
 protocol MainViewControllerProtocol: AnyObject {
-    func setContent(companies: [String])
-    
+    func setContent(pagesInfo: [PageInfo])
     func pushCompanyDetailsViewController(companyName: String)
 }
 
@@ -61,12 +60,16 @@ final class MainViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        if swipeableViews.isEmpty {
-            self.presenter?.launchData()
-        }
+
+        self.presenter?.launchData()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        hideViews()
+    }
+
     private func setupPageControl() {
         view.addSubview(pageControl)
 
@@ -84,6 +87,14 @@ final class MainViewController: UIViewController {
             make.top.equalToSuperview().inset(Constants.largeMargin)
             make.bottom.equalTo(pageControl.snp.top)
         }
+    }
+
+    private func hideViews() {
+        swipeableViews.forEach {
+            $0.removeFromSuperview()
+        }
+
+        swipeableViews.removeAll()
     }
 
     private func setupView() {
@@ -145,12 +156,12 @@ final class MainViewController: UIViewController {
 extension MainViewController: MainViewControllerProtocol {
     
     // Конфигурирует наши pageViews и все, что в них находится
-    func setContent(companies: [String]) {
+    func setContent(pagesInfo: [PageInfo]) {
         view.isUserInteractionEnabled = true
         activityIndicator.removeFromSuperview()
         let views = pageViewFactory.make(
-            companies: companies,
-            countOfViews: 5,
+            pagesInfo: pagesInfo,
+            countOfViews: pagesInfo.count,
             delegate: self
         ) { [weak self] companyName in
 
@@ -186,7 +197,9 @@ extension MainViewController: MainViewControllerProtocol {
             rootView: DetailsView()
                 .environmentObject(DetailsController(ticker: companyName))
         )
-        
+
+        hideViews()
+
         self.navigationController?.pushViewController(controller, animated: true)
     }
 }

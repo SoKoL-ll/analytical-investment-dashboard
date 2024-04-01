@@ -12,6 +12,10 @@ final class BubbleView: UIView {
 
     private var editMenuInteraction: UIContextMenuInteraction?
     private let bubbleDidTap: (String) -> Void
+    private let sizeOfBubble: Double
+    private let metricType: String
+    private let value: Double
+    private let isScrollEnabled: Bool
     weak var delegate: ViewControllerDelegateFavourites?
 
     // Label названия компании
@@ -25,15 +29,25 @@ final class BubbleView: UIView {
     private lazy var someStatisticLabel: UILabel = {
         let label = UILabel()
 
-        label.text = "+228%"
         label.font = UIFont.systemFont(ofSize: Constants.fontSizeLabelStatistic)
 
         return label
     }()
 
-    init(companyName: String, delegate: ViewControllerDelegateFavourites?, bubbleDidTap: @escaping (String) -> Void) {
+    init(companyName: String,
+         companySize: Double,
+         value: Double,
+         metricType: String,
+         isScrollEnabled: Bool,
+         delegate: ViewControllerDelegateFavourites?,
+         bubbleDidTap: @escaping (String) -> Void
+    ) {
         self.delegate = delegate
         self.bubbleDidTap = bubbleDidTap
+        self.sizeOfBubble = companySize
+        self.isScrollEnabled = isScrollEnabled
+        self.value = value
+        self.metricType = metricType
 
         super.init(frame: .zero)
 
@@ -49,7 +63,10 @@ final class BubbleView: UIView {
 
         self.addGestureRecognizer(tapGesture)
 
-        let maxSize: CGFloat = Constants.defaultBubbleSize + CGFloat.random(in: (0 ... 50))
+        let maxSize: CGFloat = isScrollEnabled 
+        ? Constants.defaultBubbleSize * 1.5
+        : Constants.defaultBubbleSize + self.sizeOfBubble
+
         let sizeOfView = UIScreen.main.bounds
 
         let x = CGFloat.random(in: (sizeOfView.origin.x + Margins.small ...
@@ -59,7 +76,14 @@ final class BubbleView: UIView {
         )
         let origin: CGPoint = CGPoint(x: x, y: y)
 
-        self.backgroundColor = maxSize > 70 ? .positive : .negative
+        if value > 0 {
+            self.backgroundColor = .positive
+        } else if value < 0 {
+            self.backgroundColor = .negative
+        } else {
+            self.backgroundColor = .neutral
+        }
+        
         self.frame = CGRect(origin: origin, size: CGSize(width: maxSize, height: maxSize))
         self.layer.cornerRadius = self.frame.width / 2
     }
@@ -70,6 +94,7 @@ final class BubbleView: UIView {
         self.addSubview(labelOfName)
         self.addSubview(someStatisticLabel)
 
+        someStatisticLabel.text = String(format: "%.1f", (trunc(self.value * 10) / 10)) + (metricType == "rel-div" ? "₽" : "%")
         labelOfName.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
@@ -144,7 +169,7 @@ private extension BubbleView {
     }
 
     struct Texts {
-        static let removeFromFavourites = "Удалить из избранного"
-        static let addToFavourites = "Добавить в избранное"
+        static let removeFromFavourites = String(localized: "Delete from favourite")
+        static let addToFavourites = String(localized: "Add to favourite")
     }
 }

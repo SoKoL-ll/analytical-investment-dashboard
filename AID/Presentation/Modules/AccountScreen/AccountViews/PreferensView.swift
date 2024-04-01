@@ -11,7 +11,7 @@ struct PreferencesSectionView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("PREFERENCES")
+            Text("PERSONAL PREFERENCES")
                 .font(.headline)
                 .padding(.top, 20)
             
@@ -38,13 +38,14 @@ struct PreferencesSectionView: View {
                     .resizable()
                     .frame(width: 23, height: 23)
                 Text("Theme")
-                    .frame(width: 120, alignment: .leading)
+                    .frame(width: 70, alignment: .leading)
                 Spacer()
                 Picker("Theme", selection: $themeManager.selectedThemeIndex) {
                     Text("System").tag(0)
                     Text("Light").tag(1)
                     Text("Dark").tag(2)
                 }
+                .frame(width: 250)
                 .pickerStyle(SegmentedPickerStyle())
             }
             .padding(.vertical, 4)
