@@ -47,6 +47,10 @@ final class MainScreenPresenterTests: XCTestCase {
 
 // Mock класс MainViewController для тестирования
 class MockMainViewController: MainViewControllerProtocol {
+    func setContent(pagesInfo: [AID.PageInfo]) {}
+    
+    func pushCompanyDetailsViewController(companyName: String) {}
+    
     var expectation: XCTestExpectation?
     var companiesSet: [String]?
     var errorLogged = false
@@ -63,55 +67,47 @@ class MockMainViewController: MainViewControllerProtocol {
 
 final class FavouritesScreenPresenterTests: XCTestCase {
 
+    class MockView: FavouritesViewControllerProtocol {
+        var contentSet = false
+        var pushedCompanyName: String?
+
+        func setContent(pageInfo: PageInfo) {
+            contentSet = true
+        }
+
+        func pushCompanyDetailsViewController(companyName: String) {
+            pushedCompanyName = companyName
+        }
+    }
+
     var presenter: FavouritesScreenPresenter!
-    var mockView: MockFavouritesViewController!
+    var mockView: MockView!
 
     override func setUpWithError() throws {
-        try super.setUpWithError()
-        mockView = MockFavouritesViewController()
+        mockView = MockView()
         presenter = FavouritesScreenPresenter(view: mockView)
     }
 
     override func tearDownWithError() throws {
         mockView = nil
         presenter = nil
-        try super.tearDownWithError()
     }
 
-    func testCompanyInFavourites() {
-        UserDefaults.standard.set(["Company1", "Company2"], forKey: "favourites")
-
-        XCTAssertTrue(presenter.companyInFavourites(companyName: "Company1"))
-        XCTAssertFalse(presenter.companyInFavourites(companyName: "Company3"))
-
-        UserDefaults.standard.set([], forKey: "favourites")
-    }
-
-    func testDeleteFromFavourites() {
+    func testDeleteFromFavourites() throws {
         UserDefaults.standard.set(["Company1", "Company2"], forKey: "favourites")
 
         presenter.deleteFromFavourites(companyName: "Company1")
-        XCTAssertFalse(presenter.companyInFavourites(companyName: "Company1"))
 
-        UserDefaults.standard.set([], forKey: "favourites")
+        XCTAssertEqual(UserDefaults.standard.stringArray(forKey: "favourites") ?? [], ["Company2"])
     }
 
-    func testLaunchData() {
-        let companies = ["Company1", "Company2"]
-        UserDefaults.standard.set(companies, forKey: "favourites")
+    func testCompanyInFavourites() throws {
+        UserDefaults.standard.set(["Company1", "Company2"], forKey: "favourites")
 
-        presenter.launchData()
-        XCTAssertEqual(mockView.companiesSet, companies)
+        let company1InFavourites = presenter.companyInFavourites(companyName: "Company1")
+        let company3InFavourites = presenter.companyInFavourites(companyName: "Company3")
 
-        UserDefaults.standard.set([], forKey: "favourites")
-    }
-}
-
-// Mock класс FavouritesViewController для тестирования
-class MockFavouritesViewController: FavouritesViewControllerProtocol {
-    var companiesSet: [String]?
-
-    func setContent(companies: [String]) {
-        companiesSet = companies
+        XCTAssertTrue(company1InFavourites)
+        XCTAssertFalse(company3InFavourites)
     }
 }

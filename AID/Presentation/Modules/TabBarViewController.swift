@@ -69,6 +69,6 @@ private extension TabBarViewController {
     struct Texts {
         static let tabBarMain = String(localized: "Main")
         static let tabBarAccount = String(localized: "Profile")
-        static let tabBarFavourite = String(localized: "Favorite")
+        static let tabBarFavourite = String(localized: "Favourite")
     }
 }

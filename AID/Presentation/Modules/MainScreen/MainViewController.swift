@@ -61,13 +61,9 @@ final class MainViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        self.presenter?.launchData()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
         hideViews()
+        plugPageView.isHidden = false
+        self.presenter?.launchData()
     }
 
     private func setupPageControl() {
@@ -105,7 +101,7 @@ final class MainViewController: UIViewController {
     // Обработка свайпов pageViews
     @objc private func handlePanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
         let translation = gestureRecognizer.translation(in: view)
-        var index = (currentViewIndex + (Int(translation.x) < 0 ? 1 : -1)) % swipeableViews.count
+        var index = (currentViewIndex + (Int(translation.x) < 0 ? 1 : -1)) % (swipeableViews.isEmpty ? 1 : swipeableViews.count)
 
         index = index == -1 ? swipeableViews.count - 1 : index
 
@@ -115,6 +111,8 @@ final class MainViewController: UIViewController {
         case .changed:
             swipeableViews[currentViewIndex].center = CGPoint(x: initialPosition.x + translation.x, y: initialPosition.y)
             if abs(translation.x) > 10 {
+                swipeableViews.forEach { $0.isHidden = true }
+                swipeableViews[currentViewIndex].isHidden = false
                 swipeableViews[index].isHidden = false
                 swipeableViews[index].center = CGPoint(
                     x: swipeableViews[currentViewIndex].center.x
@@ -124,8 +122,8 @@ final class MainViewController: UIViewController {
             } else {
                 swipeableViews[index].isHidden = true
             }
-        case .ended, .cancelled:
-            if abs(translation.x) > swipeableViews[currentViewIndex].frame.width / 2 {
+        case .ended:
+            if abs(translation.x) > swipeableViews[currentViewIndex].frame.width / 4 {
                 UIView.animate(withDuration: Constants.animateDuration, animations: { [self] in
                     swipeableViews[index].center = self.initialPosition
                     swipeableViews[currentViewIndex].center.x = self.initialPosition.x
@@ -147,6 +145,9 @@ final class MainViewController: UIViewController {
                     self.swipeableViews[index].isHidden = true
                 })
             }
+
+        case .cancelled:
+            break
         default:
             break
         }
@@ -182,9 +183,9 @@ extension MainViewController: MainViewControllerProtocol {
             }
 
             self.swipeableViews.append(pageView)
-            self.swipeableViews.first?.isHidden = false
         }
 
+        self.swipeableViews[currentViewIndex].isHidden = false
         self.pageControl.numberOfPages = swipeableViews.count
 
         if !(self.swipeableViews.isEmpty) {
