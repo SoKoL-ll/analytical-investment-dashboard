@@ -29,7 +29,7 @@ struct IndicatorDetailsView: View {
             
             HStack {
                 VStack {
-                    Text("Значение:")
+                    Text("Value:")
                     
                     Text(indicator.formattedValue)
                         .fontWeight(.bold)
@@ -42,7 +42,7 @@ struct IndicatorDetailsView: View {
                     Divider()
                     
                     VStack {
-                        Text("Вердикт:")
+                        Text("Verdict:")
                         
                         VStack {
                             Image(systemName: systemName)
@@ -59,7 +59,7 @@ struct IndicatorDetailsView: View {
             }
             .padding(.vertical, 20)
             
-            Text("Описание")
+            Text("Description")
             Text(indicatorDescription ?? "")
                 .padding(.horizontal)
             

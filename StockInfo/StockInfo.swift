@@ -20,8 +20,8 @@ struct Provider: TimelineProvider {
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<StockInfoEntry>) -> Void) {
         let userDefaults = UserDefaults.standard
-        var firstFavorite = userDefaults.stringArray(forKey: Constants.UserDefaultsKeys.favourites.rawValue)?.randomElement() ?? Constants.Default.ticker
-        var indicator = userDefaults.string(forKey: Constants.UserDefaultsKeys.indicator.rawValue) ?? Constants.Default.indicator
+        let firstFavorite = userDefaults.stringArray(forKey: Constants.UserDefaultsKeys.favourites.rawValue)?.randomElement() ?? Constants.Default.ticker
+        let indicator = userDefaults.string(forKey: Constants.UserDefaultsKeys.indicator.rawValue) ?? Constants.Default.indicator
         getStock(firstFavorite, with: indicator) { result in
             var policy: TimelineReloadPolicy = .never
             if let nextDate = Calendar.current.date(byAdding: .minute, value: Constants.Default.updateOffset, to: Date()) {
@@ -81,15 +81,15 @@ struct StockInfoEntryView: View {
 }
 
 struct StockInfo: Widget {
-    let kind: String = "StockInfo"
+    let kind: String = String(localized: "Stock Info")
     
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             StockInfoEntryView(entry: entry)
                 .containerBackground(.background, for: .widget)
         }
-        .configurationDisplayName("Stock info Widget")
-        .description("Some information about your favorite stock.")
+        .configurationDisplayName(String(localized: "Stock info Widget"))
+        .description(String(localized: "Some information about your favorite stock."))
         .supportedFamilies([.systemSmall])
     }
 }

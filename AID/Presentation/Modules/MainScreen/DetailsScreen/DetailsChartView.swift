@@ -33,12 +33,12 @@ struct DetailsChartView: View {
     }
     
     static private var availablePeriods: [(name: String, period: TimeDelta)] = [
-        ("Ч", .hour),
-        ("Д", .day),
-        ("Н", .week),
-        ("М", .month),
-        ("Г", .year),
-        ("Всё", .allTime)
+        (String(localized: "H"), .hour),
+        (String(localized: "D"), .day),
+        (String(localized: "W"), .week),
+        (String(localized: "M"), .month),
+        (String(localized: "Y"), .year),
+        (String(localized: "All"), .allTime)
     ]
     
     var body: some View {
@@ -57,7 +57,7 @@ struct DetailsChartView: View {
     
     var periodPicker: some View {
         VStack(alignment: .leading) {
-            Text("Цена акции")
+            Text("Stock price")
             
             HStack {
                 ForEach(Self.availablePeriods, id: \.name) { name, period in
@@ -111,7 +111,7 @@ struct DetailsChartView: View {
             if currentChartData.isEmpty {
                 VStack {
                     Image(systemName: "eyes")
-                    Text("Нет данных")
+                    Text("No data")
                 }
                 .fontWeight(.bold)
                 .frame(height: 250)
@@ -121,7 +121,7 @@ struct DetailsChartView: View {
         case .error:
             VStack {
                 Image(systemName: "exclamationmark.octagon")
-                Text("Что-то пошло не так")
+                Text("Something went wrong")
             }
             .frame(height: 250)
             .fontWeight(.bold)
@@ -142,7 +142,7 @@ struct DetailsChartView: View {
                     .lineStyle(.init(lineWidth: 2, miterLimit: 2, dash: [2], dashPhase: 5))
                     .annotation(position: .top, overflowResolution: .init(x: .fit)) {
                         VStack(alignment: .leading, spacing: 6) {
-                            Text("Цена акции")
+                            Text("Stock price")
                                 .font(.caption)
                             
                             Text(getFormattedDate(currentActiveItem.begin))

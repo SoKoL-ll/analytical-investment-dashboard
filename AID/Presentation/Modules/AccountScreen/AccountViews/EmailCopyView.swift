@@ -22,7 +22,7 @@ struct EmailCopyView: View {
                     UIApplication.shared.open(url)
                 }
             }) {
-                Text("Связаться с нами!")
+                Text("Contact us!")
                     .foregroundColor(.blue)
             }
 

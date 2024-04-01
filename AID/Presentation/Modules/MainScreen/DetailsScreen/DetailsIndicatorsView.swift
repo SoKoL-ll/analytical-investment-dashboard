@@ -13,7 +13,7 @@ struct DetailsIndicatorsView: View {
     
     var body: some View {
         VStack {
-            Text("Результаты аналитики")
+            Text("Analytics Results")
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
             
@@ -24,7 +24,7 @@ struct DetailsIndicatorsView: View {
             case .loaded:
                 loadedState()
             case .error:
-                Text("ошибка")
+                Text("error")
                     .padding(.bottom)
                     .bold()
             }
